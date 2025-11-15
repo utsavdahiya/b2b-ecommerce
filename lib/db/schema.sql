@@ -86,6 +86,16 @@ CREATE TABLE IF NOT EXISTS quotes (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Config table: Stores application configuration (key-value pairs)
+CREATE TABLE IF NOT EXISTS config (
+    id SERIAL PRIMARY KEY,
+    key VARCHAR(255) UNIQUE NOT NULL,
+    value TEXT NOT NULL,
+    description TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Create indexes for better query performance
 CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
 CREATE INDEX IF NOT EXISTS idx_carts_user_id ON carts(user_id);
@@ -96,6 +106,7 @@ CREATE INDEX IF NOT EXISTS idx_order_items_order_id ON order_items(order_id);
 CREATE INDEX IF NOT EXISTS idx_quotes_user_id ON quotes(user_id);
 CREATE INDEX IF NOT EXISTS idx_products_category ON products(category);
 CREATE INDEX IF NOT EXISTS idx_products_is_active ON products(is_active);
+CREATE INDEX IF NOT EXISTS idx_config_key ON config(key);
 
 -- Create updated_at trigger function
 CREATE OR REPLACE FUNCTION update_updated_at_column()
@@ -129,5 +140,9 @@ CREATE TRIGGER update_orders_updated_at BEFORE UPDATE ON orders
 
 DROP TRIGGER IF EXISTS update_quotes_updated_at ON quotes;
 CREATE TRIGGER update_quotes_updated_at BEFORE UPDATE ON quotes
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+DROP TRIGGER IF EXISTS update_config_updated_at ON config;
+CREATE TRIGGER update_config_updated_at BEFORE UPDATE ON config
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 

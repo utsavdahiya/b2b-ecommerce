@@ -208,5 +208,10 @@ INSERT INTO products (name, description, category, base_price_model, image_urls,
     true
 );
 
+-- Insert default configuration
+INSERT INTO config (key, value, description) VALUES
+('whatsapp_phone', '+1234567890', 'WhatsApp business phone number for customer support')
+ON CONFLICT (key) DO NOTHING;
+
 -- Note: Do not insert test users here. Users should be created through the signup process.
 
