@@ -106,6 +106,9 @@ export default function ProductConfiguratorPage({ params }: { params: { id: stri
     const priceModel = product.base_price_model;
     const basePrice = priceModel.base_price || 0;
 
+    // Handle empty or invalid quantity
+    const quantity = Number(config.quantity) || 0;
+
     // Calculate quantity-based price
     let pricePerUnit = 0;
     let foundTier = null;
@@ -113,8 +116,8 @@ export default function ProductConfiguratorPage({ params }: { params: { id: stri
     
     for (const tier of priceTiers) {
       if (
-        config.quantity >= tier.min_quantity &&
-        (tier.max_quantity === null || config.quantity <= tier.max_quantity)
+        quantity >= tier.min_quantity &&
+        (tier.max_quantity === null || quantity <= tier.max_quantity)
       ) {
         pricePerUnit = tier.price_per_unit;
         foundTier = tier;
@@ -123,7 +126,7 @@ export default function ProductConfiguratorPage({ params }: { params: { id: stri
     }
 
     setCurrentTier(foundTier);
-    const quantityPrice = pricePerUnit * config.quantity;
+    const quantityPrice = pricePerUnit * quantity;
 
     // Calculate individual option prices
     let materialPrice = 0;
@@ -132,28 +135,28 @@ export default function ProductConfiguratorPage({ params }: { params: { id: stri
     let otherOptionsPrice = 0;
 
     if (config.material && priceModel.material_options) {
-      materialPrice = (priceModel.material_options[config.material] || 0) * config.quantity;
+      materialPrice = (priceModel.material_options[config.material] || 0) * quantity;
     }
 
     if (config.size && priceModel.size_options) {
-      sizePrice = (priceModel.size_options[config.size] || 0) * config.quantity;
+      sizePrice = (priceModel.size_options[config.size] || 0) * quantity;
     }
 
     if (config.paper && priceModel.paper_options) {
-      otherOptionsPrice += (priceModel.paper_options[config.paper] || 0) * config.quantity;
+      otherOptionsPrice += (priceModel.paper_options[config.paper] || 0) * quantity;
     }
 
     if (config.fold && priceModel.fold_options) {
-      otherOptionsPrice += (priceModel.fold_options[config.fold] || 0) * config.quantity;
+      otherOptionsPrice += (priceModel.fold_options[config.fold] || 0) * quantity;
     }
 
     if (config.printing && priceModel.printing_options) {
-      otherOptionsPrice += (priceModel.printing_options[config.printing] || 0) * config.quantity;
+      otherOptionsPrice += (priceModel.printing_options[config.printing] || 0) * quantity;
     }
 
     if (config.finishing && Array.isArray(config.finishing) && priceModel.finishing_options) {
       for (const finish of config.finishing) {
-        finishingPrice += (priceModel.finishing_options[finish] || 0) * config.quantity;
+        finishingPrice += (priceModel.finishing_options[finish] || 0) * quantity;
       }
     }
 
@@ -161,7 +164,7 @@ export default function ProductConfiguratorPage({ params }: { params: { id: stri
 
     // Calculate savings
     const highestTierPrice = priceTiers.length > 0 ? priceTiers[0].price_per_unit : 0;
-    const savings = (highestTierPrice - pricePerUnit) * config.quantity;
+    const savings = (highestTierPrice - pricePerUnit) * quantity;
 
     setPrice({
       basePrice,
@@ -177,9 +180,22 @@ export default function ProductConfiguratorPage({ params }: { params: { id: stri
     });
   };
 
-  const handleQuantityChange = (newQuantity: number, validateImmediately = true) => {
+  const handleQuantityChange = (value: string, validateImmediately = true) => {
     const priceModel = product?.base_price_model;
     const minQty = priceModel?.price_tiers?.[0]?.min_quantity || 1;
+    
+    // Allow empty string during typing
+    if (value === '') {
+      setConfig({ ...config, quantity: '' });
+      return;
+    }
+    
+    const newQuantity = parseInt(value);
+    
+    // Ignore invalid input
+    if (isNaN(newQuantity)) {
+      return;
+    }
     
     if (validateImmediately) {
       const validQuantity = Math.max(minQty, newQuantity);
@@ -193,6 +209,13 @@ export default function ProductConfiguratorPage({ params }: { params: { id: stri
   const handleQuantityBlur = () => {
     const priceModel = product?.base_price_model;
     const minQty = priceModel?.price_tiers?.[0]?.min_quantity || 1;
+    
+    // If empty or invalid, set to minimum
+    if (config.quantity === '' || config.quantity < minQty) {
+      setConfig({ ...config, quantity: minQty });
+      return;
+    }
+    
     const validQuantity = Math.max(minQty, config.quantity);
     if (validQuantity !== config.quantity) {
       setConfig({ ...config, quantity: validQuantity });
@@ -413,7 +436,7 @@ export default function ProductConfiguratorPage({ params }: { params: { id: stri
                   {/* Stepper Controls */}
                   <div className="flex items-center gap-2">
                     <button
-                      onClick={() => handleQuantityChange(config.quantity - 1)}
+                      onClick={() => handleQuantityChange(String(Number(config.quantity || 0) - 1))}
                       className="flex-shrink-0 w-11 h-11 flex items-center justify-center bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-bold text-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                       disabled={config.quantity <= (priceModel.price_tiers?.[0]?.min_quantity || 1)}
                     >
@@ -423,14 +446,14 @@ export default function ProductConfiguratorPage({ params }: { params: { id: stri
                     <input
                       type="number"
                       value={config.quantity}
-                      onChange={(e) => handleQuantityChange(parseInt(e.target.value) || 0, false)}
+                      onChange={(e) => handleQuantityChange(e.target.value, false)}
                       onBlur={handleQuantityBlur}
                       min={priceModel.price_tiers?.[0]?.min_quantity || 1}
                       className="flex-1 min-w-0 px-3 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-center text-xl font-semibold text-gray-900 bg-white"
                     />
                     
                     <button
-                      onClick={() => handleQuantityChange(config.quantity + 1)}
+                      onClick={() => handleQuantityChange(String(Number(config.quantity || 0) + 1))}
                       className="flex-shrink-0 w-11 h-11 flex items-center justify-center bg-primary-600 hover:bg-primary-700 text-white rounded-lg font-bold text-xl transition-colors"
                     >
                       +
@@ -457,7 +480,7 @@ export default function ProductConfiguratorPage({ params }: { params: { id: stri
                         return (
                           <button
                             key={index}
-                            onClick={() => handleQuantityChange(tier.min_quantity)}
+                            onClick={() => handleQuantityChange(String(tier.min_quantity))}
                             className={`w-full flex justify-between items-center p-3 rounded-lg text-sm transition-all ${
                               isCurrentTier
                                 ? 'bg-primary-600 text-white shadow-md ring-2 ring-primary-400'
