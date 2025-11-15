@@ -55,6 +55,8 @@ export default function ProductConfiguratorPage({ params }: { params: { id: stri
   const [currentTier, setCurrentTier] = useState<any>(null);
 
   useEffect(() => {
+    // Scroll to top when navigating to product details
+    window.scrollTo(0, 0);
     fetchProduct();
   }, [productId]);
 
@@ -399,20 +401,20 @@ export default function ProductConfiguratorPage({ params }: { params: { id: stri
             </div>
 
             {/* Quantity Selection */}
-            <div className="bg-white rounded-lg shadow-md p-6">
+            <div className="bg-white rounded-lg shadow-md p-6 overflow-hidden">
               <h2 className="text-xl font-semibold text-gray-900 mb-4">Quantity</h2>
               
               <div className="space-y-4">
-                <div>
+                <div className="w-full overflow-hidden">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Number of units
                   </label>
                   
                   {/* Stepper Controls */}
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2">
                     <button
                       onClick={() => handleQuantityChange(config.quantity - 1)}
-                      className="flex-shrink-0 w-12 h-12 flex items-center justify-center bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-bold text-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="flex-shrink-0 w-11 h-11 flex items-center justify-center bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-bold text-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                       disabled={config.quantity <= (priceModel.price_tiers?.[0]?.min_quantity || 1)}
                     >
                       −
@@ -424,12 +426,12 @@ export default function ProductConfiguratorPage({ params }: { params: { id: stri
                       onChange={(e) => handleQuantityChange(parseInt(e.target.value) || 0, false)}
                       onBlur={handleQuantityBlur}
                       min={priceModel.price_tiers?.[0]?.min_quantity || 1}
-                      className="flex-1 px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-center text-xl font-semibold text-gray-900 bg-white"
+                      className="flex-1 min-w-0 px-3 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-center text-xl font-semibold text-gray-900 bg-white"
                     />
                     
                     <button
                       onClick={() => handleQuantityChange(config.quantity + 1)}
-                      className="flex-shrink-0 w-12 h-12 flex items-center justify-center bg-primary-600 hover:bg-primary-700 text-white rounded-lg font-bold text-xl transition-colors"
+                      className="flex-shrink-0 w-11 h-11 flex items-center justify-center bg-primary-600 hover:bg-primary-700 text-white rounded-lg font-bold text-xl transition-colors"
                     >
                       +
                     </button>
