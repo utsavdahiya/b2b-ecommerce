@@ -263,7 +263,7 @@ export default function ProductConfiguratorPage({ params }: { params: { id: stri
                     value={config.quantity}
                     onChange={(e) => setConfig({ ...config, quantity: parseInt(e.target.value) || 0 })}
                     min={priceModel.price_tiers?.[0]?.min_quantity || 1}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-lg"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-lg text-gray-900 bg-white"
                   />
                 </div>
 
