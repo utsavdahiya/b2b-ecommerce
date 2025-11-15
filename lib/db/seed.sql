@@ -1,7 +1,7 @@
 -- Seed data for B2B Printing E-Commerce Platform
 
 -- Insert sample products
-INSERT INTO products (name, description, category, base_price_model, is_active) VALUES
+INSERT INTO products (name, description, category, base_price_model, image_urls, stock_quantity, estimated_delivery_days, is_active) VALUES
 (
     'Business Cards',
     'Professional business cards for your company',
@@ -28,6 +28,9 @@ INSERT INTO products (name, description, category, base_price_model, is_active) 
             "foil_stamping": 25
         }
     }',
+    ARRAY['https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=800&h=600&fit=crop', 'https://images.unsplash.com/photo-1611162616305-c69b3037c2b3?w=800&h=600&fit=crop'],
+    500,
+    2,
     true
 ),
 (
@@ -67,6 +70,9 @@ INSERT INTO products (name, description, category, base_price_model, is_active) 
             "spot_uv": 20
         }
     }',
+    ARRAY['https://images.unsplash.com/photo-1609137144813-7d9921338f24?w=800&h=600&fit=crop', 'https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=800&h=600&fit=crop'],
+    300,
+    3,
     true
 ),
 (
@@ -98,6 +104,9 @@ INSERT INTO products (name, description, category, base_price_model, is_active) 
             "lamination": 8
         }
     }',
+    ARRAY['https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800&h=600&fit=crop', 'https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=800&h=600&fit=crop'],
+    750,
+    3,
     true
 ),
 (
@@ -130,6 +139,9 @@ INSERT INTO products (name, description, category, base_price_model, is_active) 
             "mounting": 15
         }
     }',
+    ARRAY['https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=800&h=600&fit=crop', 'https://images.unsplash.com/photo-1598520106830-8c45c2035460?w=800&h=600&fit=crop'],
+    200,
+    4,
     true
 ),
 (
@@ -162,6 +174,9 @@ INSERT INTO products (name, description, category, base_price_model, is_active) 
             "hemming": 10
         }
     }',
+    ARRAY['https://images.unsplash.com/photo-1579548122080-c35fd6820ecb?w=800&h=600&fit=crop', 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=800&h=600&fit=crop', 'https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=800&h=600&fit=crop'],
+    150,
+    5,
     true
 ),
 (
@@ -187,6 +202,9 @@ INSERT INTO products (name, description, category, base_price_model, is_active) 
             "double_sided": 5
         }
     }',
+    ARRAY['https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=800&h=600&fit=crop'],
+    600,
+    2,
     true
 );
 

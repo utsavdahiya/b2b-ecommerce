@@ -20,6 +20,9 @@ CREATE TABLE IF NOT EXISTS products (
     description TEXT,
     category VARCHAR(100),
     base_price_model JSONB NOT NULL DEFAULT '{}',
+    image_urls TEXT[] DEFAULT '{}',
+    stock_quantity INTEGER DEFAULT 100,
+    estimated_delivery_days INTEGER DEFAULT 3,
     is_active BOOLEAN DEFAULT true,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
