@@ -81,7 +81,7 @@ Create a `.env.local` file in the root directory:
 
 ```bash
 # Database Configuration
-DATABASE_URL=postgresql://username:password@localhost:5432/b2b_ecommerce
+DATABASE_URL=postgresql://username:password@localhost:5432/b2b_db_ehde
 
 # JWT Configuration
 JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
@@ -96,7 +96,7 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 Create a PostgreSQL database:
 
 ```bash
-createdb b2b_ecommerce
+createdb b2b_db_ehde
 ```
 
 Run the database initialization script:

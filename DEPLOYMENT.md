@@ -13,7 +13,7 @@ This guide will help you deploy your B2B E-Commerce platform to Render in under 
 2. Click "New +" → "PostgreSQL"
 3. Configure:
    - **Name**: `b2b-ecommerce-db`
-   - **Database**: `b2b_ecommerce`
+   - **Database**: `b2b_db_ehde`
    - **User**: (auto-generated)
    - **Region**: Choose closest to your users
    - **Plan**: Free

@@ -33,7 +33,7 @@ Download and install from: https://www.postgresql.org/download/windows/
 psql postgres
 
 # Create database
-CREATE DATABASE b2b_ecommerce;
+CREATE DATABASE b2b_db_ehde;
 
 # Exit psql
 \q
@@ -41,7 +41,7 @@ CREATE DATABASE b2b_ecommerce;
 
 Or use the command line:
 ```bash
-createdb b2b_ecommerce
+createdb b2b_db_ehde
 ```
 
 ## Step 3: Install Dependencies
@@ -62,7 +62,7 @@ cp .env.local.example .env.local
 Edit `.env.local` with your settings:
 
 ```env
-DATABASE_URL=postgresql://postgres:your_password@localhost:5432/b2b_ecommerce
+DATABASE_URL=postgresql://postgres:your_password@localhost:5432/b2b_db_ehde
 JWT_SECRET=your-secret-key-change-in-production
 JWT_EXPIRES_IN=7d
 NEXT_PUBLIC_APP_URL=http://localhost:3000

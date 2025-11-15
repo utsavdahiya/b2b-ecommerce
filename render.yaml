@@ -28,7 +28,7 @@ services:
 databases:
   # PostgreSQL Database
   - name: b2b-ecommerce-db
-    databaseName: b2b_ecommerce
+    databaseName: b2b_db_ehde
     plan: free
     region: oregon
 

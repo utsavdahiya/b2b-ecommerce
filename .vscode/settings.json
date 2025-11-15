@@ -1,0 +1,18 @@
+{
+    "sqltools.connections": [
+        {
+            "pgOptions": {
+                "ssl": {
+                    "rejectUnauthorized": true
+                }
+            },
+            "ssh": "Disabled",
+            "previewLimit": 50,
+            "server": "localhost",
+            "driver": "PostgreSQL",
+            "connectionTimeout": 30,
+            "connectString": "postgresql://b2b_db_ehde_user:GHSCHhCPqgYreTmBAtgfvdU74EOW2lT6@dpg-d4c101f5r7bs73a3n020-a.oregon-postgres.render.com/b2b_db_ehde",
+            "name": "b2b-commerce-PROD"
+        }
+    ]
+}
