@@ -8,6 +8,7 @@ interface Order {
   total_price: number;
   status: string;
   shipping_address: any;
+  gst_number?: string;
   items: any[];
   created_at: string;
 }
@@ -155,6 +156,14 @@ export default function OrdersPage() {
                       {order.shipping_address.state && `${order.shipping_address.state} `}
                       {order.shipping_address.postal_code}
                     </p>
+                  </div>
+                )}
+
+                {/* GST Number */}
+                {order.gst_number && (
+                  <div className="mt-3 pt-3 border-t border-gray-200">
+                    <p className="text-sm font-medium text-gray-700 mb-1">GST Number:</p>
+                    <p className="text-sm text-gray-600">{order.gst_number}</p>
                   </div>
                 )}
               </div>

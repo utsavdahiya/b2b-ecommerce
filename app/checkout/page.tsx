@@ -32,6 +32,8 @@ export default function CheckoutPage() {
     phone: '',
   });
 
+  const [gstNumber, setGstNumber] = useState('');
+
   useEffect(() => {
     fetchCart();
   }, []);
@@ -79,7 +81,10 @@ export default function CheckoutPage() {
       const res = await fetch('/api/orders', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ shippingAddress }),
+        body: JSON.stringify({ 
+          shippingAddress,
+          gstNumber: gstNumber || undefined
+        }),
       });
 
       const data = await res.json();
@@ -143,7 +148,7 @@ export default function CheckoutPage() {
                       required
                       value={shippingAddress.street}
                       onChange={handleChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-gray-900 bg-white placeholder-gray-400"
                       placeholder="123 Main Street"
                     />
                   </div>
@@ -160,7 +165,7 @@ export default function CheckoutPage() {
                         required
                         value={shippingAddress.city}
                         onChange={handleChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-gray-900 bg-white"
                       />
                     </div>
 
@@ -174,7 +179,7 @@ export default function CheckoutPage() {
                         type="text"
                         value={shippingAddress.state}
                         onChange={handleChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-gray-900 bg-white"
                       />
                     </div>
                   </div>
@@ -190,7 +195,7 @@ export default function CheckoutPage() {
                         type="text"
                         value={shippingAddress.postal_code}
                         onChange={handleChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-gray-900 bg-white"
                       />
                     </div>
 
@@ -204,7 +209,7 @@ export default function CheckoutPage() {
                         type="text"
                         value={shippingAddress.country}
                         onChange={handleChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-gray-900 bg-white"
                       />
                     </div>
                   </div>
@@ -219,10 +224,33 @@ export default function CheckoutPage() {
                       type="tel"
                       value={shippingAddress.phone}
                       onChange={handleChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                      placeholder="+1 (555) 123-4567"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-gray-900 bg-white placeholder-gray-400"
+                      placeholder="+91 988-123-4567"
                     />
                   </div>
+                </div>
+              </div>
+
+              {/* GST Number */}
+              <div className="bg-white rounded-lg shadow-md p-6">
+                <h2 className="text-xl font-semibold text-gray-900 mb-4">Tax Information</h2>
+                
+                <div>
+                  <label htmlFor="gstNumber" className="block text-sm font-medium text-gray-700 mb-1">
+                    GST Number (Optional)
+                  </label>
+                  <input
+                    id="gstNumber"
+                    name="gstNumber"
+                    type="text"
+                    value={gstNumber}
+                    onChange={(e) => setGstNumber(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-gray-900 bg-white placeholder-gray-400"
+                    placeholder="Enter your GST number"
+                  />
+                  <p className="mt-1 text-xs text-gray-500">
+                    If you have a GST number, enter it here for tax purposes.
+                  </p>
                 </div>
               </div>
 

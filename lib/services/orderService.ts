@@ -13,6 +13,7 @@ export interface Order {
   user_id: number;
   total_price: number;
   shipping_address: any;
+  gst_number?: string;
   status: string;
   items?: OrderItem[];
   created_at: Date;
@@ -45,7 +46,8 @@ export type OrderStatus =
  */
 export async function createOrderFromCart(
   userId: number,
-  shippingAddress: any
+  shippingAddress: any,
+  gstNumber?: string
 ): Promise<{ success: boolean; message: string; order?: Order }> {
   const client = await getClient();
 
@@ -74,10 +76,10 @@ export async function createOrderFromCart(
 
     // Create order
     const orderResult = await client.query(
-      `INSERT INTO orders (user_id, total_price, shipping_address, status)
-       VALUES ($1, $2, $3, 'payment_pending')
+      `INSERT INTO orders (user_id, total_price, shipping_address, gst_number, status)
+       VALUES ($1, $2, $3, $4, 'payment_pending')
        RETURNING *`,
-      [userId, cart.total, shippingAddress]
+      [userId, cart.total, shippingAddress, gstNumber || null]
     );
 
     const order = orderResult.rows[0];

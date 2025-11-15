@@ -66,7 +66,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const { shippingAddress } = await request.json();
+    const { shippingAddress, gstNumber } = await request.json();
 
     if (!shippingAddress) {
       return NextResponse.json(
@@ -75,7 +75,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const result = await createOrderFromCart(userId, shippingAddress);
+    const result = await createOrderFromCart(userId, shippingAddress, gstNumber);
 
     if (!result.success) {
       return NextResponse.json(
