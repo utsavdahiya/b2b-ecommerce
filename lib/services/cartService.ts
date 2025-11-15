@@ -61,7 +61,13 @@ export async function getOrCreateCart(userId: number): Promise<Cart> {
       [cart.id]
     );
 
-    cart.items = itemsResult.rows;
+    // Convert numeric strings to numbers for proper frontend handling
+    cart.items = itemsResult.rows.map((item: any) => ({
+      ...item,
+      unit_price: parseFloat(item.unit_price),
+      quantity: parseInt(item.quantity),
+    }));
+    
     cart.total = cart.items.reduce(
       (sum: number, item: CartItem) => sum + item.unit_price * item.quantity,
       0
