@@ -9,10 +9,13 @@ interface Product {
   name: string;
   description: string;
   category: string;
+  sub_category?: string;
+  product_code?: string;
   base_price_model: any;
   image_urls?: string[];
   stock_quantity?: number;
   estimated_delivery_days?: number;
+  attributes?: Record<string, string>;
 }
 
 interface PriceBreakdown {
@@ -397,8 +400,42 @@ export default function ProductConfiguratorPage({ params }: { params: { id: stri
 
             {/* Product Header */}
             <div className="bg-white rounded-lg shadow-md p-6">
+              <div className="mb-2 flex items-center gap-3">
+                {product.sub_category && (
+                  <span className="inline-block px-3 py-1 bg-primary-100 text-primary-700 text-sm font-medium rounded-full">
+                    {product.sub_category}
+                  </span>
+                )}
+                {product.product_code && (
+                  <span className="text-sm text-gray-500">
+                    Code: <span className="font-mono font-semibold text-gray-700">{product.product_code}</span>
+                  </span>
+                )}
+              </div>
               <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-3">{product.name}</h1>
               <p className="text-lg text-gray-600 mb-4">{product.description}</p>
+              
+              {/* Product Attributes */}
+              {product.attributes && Object.keys(product.attributes).length > 0 && (
+                <div className="mb-4 p-4 bg-gradient-to-br from-gray-50 to-blue-50 rounded-lg border border-gray-200">
+                  <h3 className="text-sm font-semibold text-gray-800 mb-3 flex items-center">
+                    <svg className="w-4 h-4 mr-2 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    Product Specifications
+                  </h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {Object.entries(product.attributes).map(([key, value]) => (
+                      <div key={key} className="flex items-start bg-white rounded-md p-3 shadow-sm">
+                        <div className="flex-1">
+                          <dt className="text-xs text-gray-500 font-medium uppercase tracking-wide">{key}</dt>
+                          <dd className="mt-1 text-sm text-gray-900 font-semibold">{value}</dd>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
               
               {/* Trust Signals */}
               <div className="flex flex-wrap gap-4 text-sm">

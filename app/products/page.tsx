@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 interface Product {
@@ -8,17 +9,29 @@ interface Product {
   name: string;
   description: string;
   category: string;
+  sub_category?: string;
+  product_code?: string;
   base_price_model: any;
+  image_urls?: string[];
+  attributes?: Record<string, string>;
 }
 
-export default function ProductsPage() {
+function ProductsContent() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const categoryParam = searchParams?.get('category') || 'all';
+  const [selectedCategory, setSelectedCategory] = useState<string>(categoryParam);
 
   useEffect(() => {
     fetchProducts();
   }, []);
+
+  useEffect(() => {
+    const category = searchParams?.get('category') || 'all';
+    setSelectedCategory(category);
+  }, [searchParams]);
 
   const fetchProducts = async () => {
     try {
@@ -38,6 +51,12 @@ export default function ProductsPage() {
     selectedCategory === 'all'
       ? products
       : products.filter(p => p.category === selectedCategory);
+
+  const handleCategoryChange = (category: string) => {
+    setSelectedCategory(category);
+    const url = category === 'all' ? '/products' : `/products?category=${category}`;
+    router.push(url);
+  };
 
   const formatCategoryName = (category: string) => {
     return category
@@ -97,7 +116,7 @@ export default function ProductsPage() {
             {categories.map(category => (
               <button
                 key={category}
-                onClick={() => setSelectedCategory(category)}
+                onClick={() => handleCategoryChange(category)}
                 className={`px-4 py-2 rounded-lg whitespace-nowrap transition-colors ${
                   selectedCategory === category
                     ? 'bg-primary-600 text-white'
@@ -125,10 +144,25 @@ export default function ProductsPage() {
                 href={`/products/${product.id}`}
                 className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow overflow-hidden group"
               >
-                {/* Product Image Placeholder */}
-                <div className="h-48 bg-gradient-to-br from-primary-100 to-primary-200 flex items-center justify-center group-hover:from-primary-200 group-hover:to-primary-300 transition-colors">
+                {/* Product Image */}
+                <div className="h-48 bg-gradient-to-br from-primary-100 to-primary-200 flex items-center justify-center group-hover:from-primary-200 group-hover:to-primary-300 transition-colors overflow-hidden">
+                  {product.image_urls && product.image_urls.length > 0 ? (
+                    <img 
+                      src={product.image_urls[0]} 
+                      alt={product.name}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        // Fallback to SVG icon if image fails to load
+                        e.currentTarget.style.display = 'none';
+                        if (e.currentTarget.nextElementSibling) {
+                          (e.currentTarget.nextElementSibling as HTMLElement).style.display = 'flex';
+                        }
+                      }}
+                    />
+                  ) : null}
                   <svg
                     className="w-24 h-24 text-primary-600 opacity-50"
+                    style={{ display: product.image_urls && product.image_urls.length > 0 ? 'none' : 'block' }}
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -145,19 +179,45 @@ export default function ProductsPage() {
                 {/* Product Info */}
                 <div className="p-6">
                   <div className="flex items-start justify-between">
-                    <div>
+                    <div className="flex-1">
                       <h3 className="text-xl font-semibold text-gray-900 group-hover:text-primary-600 transition-colors">
                         {product.name}
                       </h3>
-                      <p className="mt-1 text-sm text-gray-500">
-                        {formatCategoryName(product.category)}
-                      </p>
+                      {product.sub_category ? (
+                        <p className="mt-1 text-sm font-medium text-primary-600">
+                          {product.sub_category}
+                        </p>
+                      ) : (
+                        <p className="mt-1 text-sm text-gray-500">
+                          {formatCategoryName(product.category)}
+                        </p>
+                      )}
+                      {product.product_code && (
+                        <p className="mt-1 text-xs text-gray-400">
+                          Code: {product.product_code}
+                        </p>
+                      )}
                     </div>
                   </div>
 
                   <p className="mt-3 text-gray-600 line-clamp-2">
                     {product.description}
                   </p>
+
+                  {/* Product Attributes */}
+                  {product.attributes && Object.keys(product.attributes).length > 0 && (
+                    <div className="mt-3 space-y-1">
+                      {Object.entries(product.attributes).slice(0, 3).map(([key, value]) => (
+                        <div key={key} className="flex items-start text-xs">
+                          <span className="text-gray-500 mr-1">{key}:</span>
+                          <span className="text-gray-700 font-medium line-clamp-1">{value}</span>
+                        </div>
+                      ))}
+                      {Object.keys(product.attributes).length > 3 && (
+                        <p className="text-xs text-primary-600">+ {Object.keys(product.attributes).length - 3} more</p>
+                      )}
+                    </div>
+                  )}
 
                   <div className="mt-4 flex items-center justify-between">
                     <div>
@@ -191,6 +251,21 @@ export default function ProductsPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function ProductsPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading...</p>
+        </div>
+      </div>
+    }>
+      <ProductsContent />
+    </Suspense>
   );
 }
 

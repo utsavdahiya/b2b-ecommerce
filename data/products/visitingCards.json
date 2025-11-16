@@ -1,0 +1,403 @@
+[
+    {
+      "productCode": "1",
+      "productName": "Metal Card",
+      "category": "Visiting Card",
+      "subCategory": "METAL VISITING CARDS",
+      "imageSrc": "https://printersclub.in/images/cat-images/metal%20start.jpg",
+      "attributes": {
+        "Sheet Color": "8 Types",
+        "Die Cut Option": "Any Shape",
+        "Production Time": "3 day",
+        "Note": "This product is reserved only for the top management of ROC-registered companies."
+      }
+    },
+    {
+      "productCode": "2",
+      "productName": "800 GSM+Velvet",
+      "category": "Visiting Card",
+      "subCategory": "800 GSM VISITING CARDS",
+      "imageSrc": "https://printersclub.in/images/cat-images/NEW800VV.jpg",
+      "attributes": {
+        "Lamination Type": "Velvet",
+        "UV Option": "Available",
+        "Foil Option": "Available (5 Types)",
+        "Die Cut Option": "Available (36 Types)",
+        "Production Time": "3 days"
+      }
+    },
+    {
+      "productCode": "3",
+      "productName": "800 GSM+Matt",
+      "category": "Visiting Card",
+      "subCategory": "800 GSM VISITING CARDS",
+      "imageSrc": "https://printersclub.in/images/cat-images/800VCM.jpg",
+      "attributes": {
+        "Lamination Type": "Matt",
+        "UV Option": "Available",
+        "Foil Option": "Available",
+        "Die Cut Option": "Available (36 Types)",
+        "Production Time": "3 days"
+      }
+    },
+    {
+      "productCode": "4",
+      "productName": "800 GSM+Black Sheet",
+      "category": "Visiting Card",
+      "subCategory": "800 GSM VISITING CARDS",
+      "imageSrc": "https://printersclub.in/images/cat-images/800%20GSM%20BLACK%20SHEET%20img%20%281%29.jpg",
+      "attributes": {
+        "Lamination": "Not Available",
+        "UV Option": "Available",
+        "Foil Option": "Available (5 Types)",
+        "Die Cut Option": "Available (36 Types)",
+        "Production Time": "3 days"
+      }
+    },
+    {
+      "productCode": "5",
+      "productName": "800 GSM+Craft Sheet",
+      "category": "Visiting Card",
+      "subCategory": "800 GSM VISITING CARDS",
+      "imageSrc": "https://printersclub.in/images/cat-images/NEW800CRAFT.jpg",
+      "attributes": {
+        "Lamination": "Not Available",
+        "Foil Option": "Available (5 Types)",
+        "Die Cut Option": "Available (36 Types)",
+        "Production Time": "3 days"
+      }
+    },
+    {
+      "productCode": "6",
+      "productName": "800 GSM+Texture",
+      "category": "Visiting Card",
+      "subCategory": "800 GSM VISITING CARDS",
+      "imageSrc": "https://printersclub.in/images/cat-images/800%20GSM%20TEXTUR%20img.jpg",
+      "attributes": {
+        "Lamination Type": "Matt",
+        "Texture Option": "Available (8 Types)",
+        "Die Cut Option": "Available (36 Types)",
+        "Production Time": "3 days"
+      }
+    },
+    {
+      "productCode": "7",
+      "productName": "500 GSM+Velvet",
+      "category": "Visiting Card",
+      "subCategory": "500 GSM CARDS",
+      "imageSrc": "https://printersclub.in/images/cat-images/500%20GSM%20Velvet%20Image%20Phot.jpg",
+      "attributes": {
+        "Description": "Velvet Lamination; Customized Die Cut Available",
+        "UV Option": "Available",
+        "Foil Option": "Available (5 Types)",
+        "Die Cut Option": "Available (36 Types)",
+        "Production Time": "3 days"
+      }
+    },
+    {
+      "productCode": "8",
+      "productName": "500 GSM+Matt",
+      "category": "Visiting Card",
+      "subCategory": "500 GSM CARDS",
+      "imageSrc": "https://printersclub.in/images/cat-images/500%20GSM%20Matt%20Image%20Phot.jpg",
+      "attributes": {
+        "Description": "Matt Lamination",
+        "UV Option": "Available",
+        "Foil Option": "Available (5 Types)",
+        "Die Cut Option": "Available (36 Types)",
+        "Production Time": "3 days"
+      }
+    },
+    {
+      "productCode": "9",
+      "productName": "500 GSM+Drip-off",
+      "category": "Visiting Card",
+      "subCategory": "500 GSM CARDS",
+      "imageSrc": "https://printersclub.in/images/cat-images/NEW500DRIPOFF.jpg",
+      "attributes": {
+        "Description": "Drip-off",
+        "Die Cut Option": "Available (36 Types)",
+        "Production Time": "3 days"
+      }
+    },
+    {
+      "productCode": "10",
+      "productName": "800 Micron Fusing",
+      "category": "Visiting Card",
+      "subCategory": "NT / PVC VISITING CARDS",
+      "imageSrc": "https://printersclub.in/images/cat-images/800%20MICRON%20FUSING%20img.jpg",
+      "attributes": {
+        "Sheet Color": "White,Gold,Silver",
+        "UV Option": "Available",
+        "Foil Option": "Available (5 Types)",
+        "Die Cut Option": "Available (2 Types)",
+        "Production Time": "3 days"
+      }
+    },
+    {
+      "productCode": "11",
+      "productName": "250 Micron Transparent Card",
+      "category": "Visiting Card",
+      "subCategory": "NT / PVC VISITING CARDS",
+      "imageSrc": "https://printersclub.in/images/cat-images/250%20MICRON%20TRANSPAPENT%20img.jpg",
+      "attributes": {
+        "250 Micron Transparent NT Sheet": "",
+        "Die Cut Option": "Die No. 1 only",
+        "Production Time": "3 days"
+      }
+    },
+    {
+      "productCode": "12",
+      "productName": "180 Micron",
+      "category": "Visiting Card",
+      "subCategory": "NT / PVC VISITING CARDS",
+      "imageSrc": "https://printersclub.in/images/cat-images/new180micron.jpg",
+      "attributes": {
+        "180 Micron White NT Sheet": "",
+        "Gloss UV Coating Option": "Available",
+        "Production Time": "2 days"
+      }
+    },
+    {
+      "productCode": "14",
+      "productName": "MATT+UV",
+      "category": "Visiting Card",
+      "subCategory": "REGULAR VISITING CARDS",
+      "imageSrc": "https://printersclub.in/images/cat-images/MATT%20UV%20CARD%20img%20%281%29.jpg",
+      "attributes": {
+        "Description": "Matt Lamination (Premium Thermal Quality)",
+        "UV Option": "Available",
+        "Production Time": "2 days"
+      }
+    },
+    {
+      "productCode": "15",
+      "productName": "MATT",
+      "category": "Visiting Card",
+      "subCategory": "REGULAR VISITING CARDS",
+      "imageSrc": "https://printersclub.in/images/cat-images/MATT%20LAMINATION%20CARD%20img.jpg",
+      "attributes": {
+        "Description": "Matt Lamination (Premium Thermal Quality)",
+        "Production Time": "2 days"
+      }
+    },
+    {
+      "productCode": "16",
+      "productName": "Matt+Texture",
+      "category": "Visiting Card",
+      "subCategory": "REGULAR VISITING CARDS",
+      "imageSrc": "https://printersclub.in/images/cat-images/MATT%20TEXTURE%20img%20%281%29.jpg",
+      "attributes": {
+        "Description": "Matt Lamination (Premium Thermal Quality)",
+        "Texture Option": "Available (8 Types)",
+        "Production Time": "3 days"
+      }
+    },
+    {
+      "productCode": "17",
+      "productName": "Gloss+Texture",
+      "category": "Visiting Card",
+      "subCategory": "REGULAR VISITING CARDS",
+      "imageSrc": "https://printersclub.in/images/cat-images/GLOSS%20TEXTURE%20img%20%281%29.jpg",
+      "attributes": {
+        "Description": "Gloss UV Coating",
+        "Texture Option": "Available (8 Types)",
+        "Production Time": "3 days"
+      }
+    },
+    {
+      "productCode": "18",
+      "productName": "GLOSS LAMINATION",
+      "category": "Visiting Card",
+      "subCategory": "REGULAR VISITING CARDS",
+      "imageSrc": "https://printersclub.in/images/cat-images/GLOSS%20LAMINATION%20CARD%20img.jpg",
+      "attributes": {
+        "Description": "Gloss Lamination (Premium Thermal Quality)",
+        "Production Time": "1 day"
+      }
+    },
+    {
+      "productCode": "19",
+      "productName": "GLOSS COATED",
+      "category": "Visiting Card",
+      "subCategory": "REGULAR VISITING CARDS",
+      "imageSrc": "https://printersclub.in/images/cat-images/GLOSS%20COATED%20CARD%20img.jpg",
+      "attributes": {
+        "Description": "Gloss UV Coating",
+        "Production Time": "12 hours"
+      }
+    },
+    {
+      "productCode": "20",
+      "productName": "WITHOUT LAMINATION",
+      "category": "Visiting Card",
+      "subCategory": "REGULAR VISITING CARDS",
+      "imageSrc": "https://printersclub.in/images/cat-images/WITHOUT%20LAMINATION%20img.jpg",
+      "attributes": {
+        "Description": "Without Lamination Card",
+        "Production Time": "2 day"
+      }
+    },
+    {
+      "productCode": "21",
+      "productName": "GLOSS COATED-SMALL",
+      "category": "Visiting Card",
+      "subCategory": "REGULAR VISITING CARDS",
+      "imageSrc": "https://printersclub.in/images/cat-images/SMALL%20GLOSS%20COATED%20img.jpg",
+      "attributes": {
+        "Description": "Small Size, Gloss UV Coating",
+        "Production Time": "1 day"
+      }
+    },
+    {
+      "productCode": "22",
+      "productName": "WITHOUT LAMINATION-SMALL",
+      "category": "Visiting Card",
+      "subCategory": "REGULAR VISITING CARDS",
+      "imageSrc": "https://printersclub.in/images/cat-images/W%20L%20Small%20img.jpg",
+      "attributes": {
+        "Description": "Small Size, Without Lamination Card",
+        "Production Time": "2 day"
+      }
+    },
+    {
+      "productCode": "2",
+      "productName": "50%Discount Cards (800 GSM+Velvet)",
+      "category": "Visiting Card",
+      "subCategory": "50% Discount cards",
+      "imageSrc": "https://printersclub.in/images/cat-images/OFFER800VELVET.jpg",
+      "attributes": {
+        "Lamination Type": "Velvet",
+        "UV Option": "Available",
+        "Foil Option": "Available (5 Types)",
+        "Die Cut Option": "Available (36 Types)",
+        "Production Time": "3 days",
+        "Note": "Offer available for printer’s personal card."
+      }
+    },
+    {
+      "productCode": "3",
+      "productName": "50%Discount (800 GSM+Matt)",
+      "category": "Visiting Card",
+      "subCategory": "50% Discount cards",
+      "imageSrc": "https://printersclub.in/images/cat-images/OFFER800MATT.jpg",
+      "attributes": {
+        "Lamination Type": "Matt",
+        "UV Option": "Available",
+        "Foil Option": "Available",
+        "Die Cut Option": "Available (36 Types)",
+        "Production Time": "3 days",
+        "Note": "Offer available for printer’s personal card."
+      }
+    },
+    {
+      "productCode": "5",
+      "productName": "50%Discount Cards (800 GSM+Craft Sheet)",
+      "category": "Visiting Card",
+      "subCategory": "50% Discount cards",
+      "imageSrc": "https://printersclub.in/images/cat-images/OFFER800CRAFT.jpg",
+      "attributes": {
+        "Lamination": "Not Available",
+        "Foil Option": "Available (5 Types)",
+        "Die Cut Option": "Available (36 Types)",
+        "Production Time": "3 days",
+        "Note": "Offer available for printer’s personal card."
+      }
+    },
+    {
+      "productCode": "9",
+      "productName": "50%Discount (500 GSM+Drip-off)",
+      "category": "Visiting Card",
+      "subCategory": "50% Discount cards",
+      "imageSrc": "https://printersclub.in/images/cat-images/OFFER500DRIP.jpg",
+      "attributes": {
+        "Description": "Drip-off",
+        "Die Cut Option": "Available (36 Types)",
+        "Production Time": "3 days",
+        "Note": "Offer available for printer’s personal card."
+      }
+    },
+    {
+      "productCode": "12-C",
+      "productName": "50%Discount Cards (180 Micron NT Card+Drip-Off)",
+      "category": "Visiting Card",
+      "subCategory": "50% Discount cards",
+      "imageSrc": "https://printersclub.in/images/cat-images/Newoffernt180.jpg",
+      "attributes": {
+        "180 Micron White NT Sheet": "",
+        "Drip-Off Option": "Available",
+        "Production Time": "2 days",
+        "Note": "Offer available for printer’s personal card."
+      }
+    },
+    {
+      "productCode": "2",
+      "productName": "100%Discount Cards (800 GSM+Velvet)",
+      "category": "Visiting Card",
+      "subCategory": "100% Discount cards",
+      "imageSrc": "https://printersclub.in/images/cat-images/100VELVET.jpg",
+      "attributes": {
+        "Lamination Type": "Velvet",
+        "UV Option": "Available",
+        "Foil Option": "Available (5 Types)",
+        "Die Cut Option": "Available (36 Types)",
+        "Production Time": "3 days",
+        "Note": "Offer available for GST-registered printers on their personal cards."
+      }
+    },
+    {
+      "productCode": "3",
+      "productName": "100%Discount (800 GSM+Matt)",
+      "category": "Visiting Card",
+      "subCategory": "100% Discount cards",
+      "imageSrc": "https://printersclub.in/images/cat-images/100MATT.jpg",
+      "attributes": {
+        "Lamination Type": "Matt",
+        "UV Option": "Available",
+        "Foil Option": "Available",
+        "Die Cut Option": "Available (36 Types)",
+        "Production Time": "3 days",
+        "Note": "Offer available for GST-registered printers on their personal cards."
+      }
+    },
+    {
+      "productCode": "5",
+      "productName": "100%Discount Cards (800 GSM+Craft Sheet)",
+      "category": "Visiting Card",
+      "subCategory": "100% Discount cards",
+      "imageSrc": "https://printersclub.in/images/cat-images/100CRAFT.jpg",
+      "attributes": {
+        "Lamination": "Not Available",
+        "Foil Option": "Available (5 Types)",
+        "Die Cut Option": "Available (36 Types)",
+        "Production Time": "3 days",
+        "Note": "Offer available for GST-registered printers on their personal cards."
+      }
+    },
+    {
+      "productCode": "9",
+      "productName": "100%Discount (500 GSM+Drip-off)",
+      "category": "Visiting Card",
+      "subCategory": "100% Discount cards",
+      "imageSrc": "https://printersclub.in/images/cat-images/100DRIPOFF.jpg",
+      "attributes": {
+        "Description": "Drip-off",
+        "Die Cut Option": "Available (36 Types)",
+        "Production Time": "3 days",
+        "Note": "Offer available for GST-registered printers on their personal cards."
+      }
+    },
+    {
+      "productCode": "12-C",
+      "productName": "100%Discount Cards (180 Micron NT Card+Drip-Off)",
+      "category": "Visiting Card",
+      "subCategory": "100% Discount cards",
+      "imageSrc": "https://printersclub.in/images/cat-images/100NTDRIPOFF.jpg",
+      "attributes": {
+        "180 Micron White NT Sheet": "",
+        "Drip-Off Option": "Available",
+        "Production Time": "2 days",
+        "Note": "Offer available for GST-registered printers on their personal cards."
+      }
+    }
+  ]

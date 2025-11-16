@@ -1,18 +1,41 @@
 'use client';
 
 import Link from 'next/link';
-import { useRouter, usePathname } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
+import { useState, useEffect, useRef } from 'react';
 
 export default function Navbar() {
   const router = useRouter();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [user, setUser] = useState<any>(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [categories, setCategories] = useState<string[]>([]);
+  const [productsMenuOpen, setProductsMenuOpen] = useState(false);
+  const [mobileProductsMenuOpen, setMobileProductsMenuOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     fetchUser();
+    fetchCategories();
   }, [pathname]);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setProductsMenuOpen(false);
+      }
+    };
+
+    if (productsMenuOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [productsMenuOpen]);
 
   const fetchUser = async () => {
     try {
@@ -26,6 +49,34 @@ export default function Navbar() {
     } catch (error) {
       setUser(null);
     }
+  };
+
+  const fetchCategories = async () => {
+    try {
+      const res = await fetch('/api/categories');
+      if (res.ok) {
+        const data = await res.json();
+        setCategories(data.categories || []);
+      }
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+    }
+  };
+
+  const formatCategoryName = (category: string) => {
+    if (category === 'all') return 'All';
+    return category
+      .split('_')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  };
+
+  const handleCategoryClick = (category: string) => {
+    const url = category === 'all' ? '/products' : `/products?category=${category}`;
+    router.push(url);
+    setProductsMenuOpen(false);
+    setMobileProductsMenuOpen(false);
+    setMenuOpen(false);
   };
 
   const handleLogout = async () => {
@@ -53,14 +104,63 @@ export default function Navbar() {
           <div className="hidden md:flex items-center space-x-6">
             {user ? (
               <>
-                <Link
-                  href="/products"
-                  className={`text-gray-700 hover:text-primary-600 transition-colors ${
-                    pathname === '/products' ? 'text-primary-600 font-semibold' : ''
-                  }`}
-                >
-                  Products
-                </Link>
+                {/* Products with Dropdown */}
+                <div className="relative" ref={dropdownRef}>
+                  <button
+                    onMouseEnter={() => setProductsMenuOpen(true)}
+                    onMouseLeave={() => setProductsMenuOpen(false)}
+                    className={`text-gray-700 hover:text-primary-600 transition-colors flex items-center space-x-1 ${
+                      pathname === '/products' ? 'text-primary-600 font-semibold' : ''
+                    }`}
+                  >
+                    <span>Products</span>
+                    <svg
+                      className={`w-4 h-4 transition-transform ${productsMenuOpen ? 'rotate-180' : ''}`}
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M19 9l-7 7-7-7"
+                      />
+                    </svg>
+                  </button>
+                  
+                  {productsMenuOpen && (
+                    <div
+                      className="absolute top-full left-0 mt-1 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50"
+                      onMouseEnter={() => setProductsMenuOpen(true)}
+                      onMouseLeave={() => setProductsMenuOpen(false)}
+                    >
+                      <button
+                        onClick={() => handleCategoryClick('all')}
+                        className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-100 transition-colors ${
+                          pathname === '/products' && !searchParams?.get('category')
+                            ? 'text-primary-600 font-semibold bg-primary-50'
+                            : 'text-gray-700'
+                        }`}
+                      >
+                        All Products
+                      </button>
+                      {categories.map((category) => (
+                        <button
+                          key={category}
+                          onClick={() => handleCategoryClick(category)}
+                          className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-100 transition-colors ${
+                            searchParams?.get('category') === category
+                              ? 'text-primary-600 font-semibold bg-primary-50'
+                              : 'text-gray-700'
+                          }`}
+                        >
+                          {formatCategoryName(category)}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
                 <Link
                   href="/cart"
                   className={`text-gray-700 hover:text-primary-600 transition-colors ${
@@ -154,13 +254,57 @@ export default function Navbar() {
                   <p className="text-sm font-semibold text-gray-900">{user.company_name}</p>
                   <p className="text-xs text-gray-500">{user.email}</p>
                 </div>
-                <Link
-                  href="/products"
-                  className="block py-2 text-gray-700 hover:text-primary-600"
-                  onClick={() => setMenuOpen(false)}
-                >
-                  Products
-                </Link>
+                
+                {/* Products with Sub-menu */}
+                <div>
+                  <button
+                    onClick={() => setMobileProductsMenuOpen(!mobileProductsMenuOpen)}
+                    className="w-full flex items-center justify-between py-2 text-gray-700 hover:text-primary-600"
+                  >
+                    <span>Products</span>
+                    <svg
+                      className={`w-4 h-4 transition-transform ${mobileProductsMenuOpen ? 'rotate-180' : ''}`}
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M19 9l-7 7-7-7"
+                      />
+                    </svg>
+                  </button>
+                  
+                  {mobileProductsMenuOpen && (
+                    <div className="pl-4 mt-1 space-y-1">
+                      <button
+                        onClick={() => handleCategoryClick('all')}
+                        className={`w-full text-left py-2 text-sm ${
+                          pathname === '/products' && !searchParams?.get('category')
+                            ? 'text-primary-600 font-semibold'
+                            : 'text-gray-600 hover:text-primary-600'
+                        }`}
+                      >
+                        All Products
+                      </button>
+                      {categories.map((category) => (
+                        <button
+                          key={category}
+                          onClick={() => handleCategoryClick(category)}
+                          className={`w-full text-left py-2 text-sm ${
+                            searchParams?.get('category') === category
+                              ? 'text-primary-600 font-semibold'
+                              : 'text-gray-600 hover:text-primary-600'
+                          }`}
+                        >
+                          {formatCategoryName(category)}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
                 <Link
                   href="/cart"
                   className="block py-2 text-gray-700 hover:text-primary-600"

@@ -12,7 +12,13 @@ export interface Product {
   name: string;
   description: string;
   category: string;
+  sub_category?: string;
+  product_code?: string;
   base_price_model: any;
+  image_urls?: string[];
+  stock_quantity?: number;
+  estimated_delivery_days?: number;
+  attributes?: Record<string, string>;
   is_active: boolean;
   created_at: Date;
   updated_at: Date;
