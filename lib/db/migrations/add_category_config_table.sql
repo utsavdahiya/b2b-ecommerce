@@ -21,7 +21,7 @@ CREATE TRIGGER update_category_config_updated_at BEFORE UPDATE ON category_confi
 -- Insert default filter configuration for Visiting Cards category
 INSERT INTO category_config (category, filters, description)
 VALUES (
-    'Visiting Cards',
+    'Visiting Card',
     '{
         "printing": {
             "label": "Printing",

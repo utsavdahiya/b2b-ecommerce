@@ -3,6 +3,8 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import DieShapeSelector from '@/components/DieShapeSelector';
+import type { CategoryConfig, CategoryFilter } from '@/lib/types/categoryConfig';
 
 interface Product {
   id: number;
@@ -41,6 +43,7 @@ export default function ProductConfiguratorPage({ params }: { params: { id: stri
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [imageZoomed, setImageZoomed] = useState(false);
+  const [categoryConfig, setCategoryConfig] = useState<CategoryConfig | null>(null);
 
   // Configuration state
   const [config, setConfig] = useState<any>({
@@ -69,6 +72,21 @@ export default function ProductConfiguratorPage({ params }: { params: { id: stri
     }
   }, [config, product]);
 
+  // Set default values from category config when it loads
+  useEffect(() => {
+    if (categoryConfig && categoryConfig.filters) {
+      setConfig((prev: any) => {
+        const updated = { ...prev };
+        Object.entries(categoryConfig.filters).forEach(([key, filter]) => {
+          if (filter.default !== undefined && prev[key] === undefined) {
+            updated[key] = filter.default;
+          }
+        });
+        return updated;
+      });
+    }
+  }, [categoryConfig]);
+
   const fetchProduct = async () => {
     try {
       const res = await fetch(`/api/products?id=${productId}`);
@@ -79,6 +97,30 @@ export default function ProductConfiguratorPage({ params }: { params: { id: stri
       }
 
       setProduct(data.product);
+
+      // Fetch category configuration
+      if (data.product.category) {
+        try {
+          const configRes = await fetch(
+            `/api/category-config?category=${encodeURIComponent(data.product.category)}`
+          );
+          if (configRes.ok) {
+            const configData = await configRes.json();
+            if (configData.data) {
+              setCategoryConfig(configData.data);
+              console.log('Category config loaded:', configData.data);
+            } else {
+              console.warn('No category config found for category:', data.product.category);
+            }
+          } else {
+            console.warn('Failed to fetch category config. Status:', configRes.status);
+          }
+        } catch (error) {
+          console.warn('Failed to fetch category config:', error);
+        }
+      } else {
+        console.warn('Product has no category set');
+      }
 
       // Set default config values
       const priceModel = data.product.base_price_model;
@@ -280,6 +322,118 @@ export default function ProductConfiguratorPage({ params }: { params: { id: stri
       .split('_')
       .map(word => word.charAt(0).toUpperCase() + word.slice(1))
       .join(' ');
+  };
+
+  const handleCategoryFilterChange = (key: string, value: any) => {
+    setConfig((prev: any) => ({
+      ...prev,
+      [key]: value,
+    }));
+  };
+
+  const renderCategoryFilter = (key: string, filter: CategoryFilter) => {
+    const value = config[key];
+
+    switch (filter.type) {
+      case 'select':
+        // Determine layout based on number of options for optimal UX
+        const optionCount = filter.options.length;
+        let layoutClass = '';
+        let buttonClass = '';
+        
+        if (optionCount <= 2) {
+          // For 2 options: side-by-side toggle style
+          layoutClass = 'grid grid-cols-2 gap-3';
+          buttonClass = 'w-full';
+        } else if (optionCount <= 4) {
+          // For 3-4 options: horizontal button group
+          layoutClass = 'flex flex-wrap gap-2';
+          buttonClass = 'flex-1 min-w-[70px]';
+        } else {
+          // For 5+ options: responsive grid
+          layoutClass = 'grid grid-cols-2 sm:grid-cols-3 gap-2';
+          buttonClass = 'w-full';
+        }
+        
+        return (
+          <div className="bg-white rounded-lg shadow-md p-6" key={key}>
+            <h2 className="text-lg font-semibold text-gray-900 mb-3">
+              {filter.label}
+              {filter.required && <span className="text-red-500 ml-1">*</span>}
+            </h2>
+            <div className={layoutClass}>
+              {filter.options.map((option) => (
+                <button
+                  key={option}
+                  onClick={() => handleCategoryFilterChange(key, option)}
+                  className={`
+                    ${buttonClass}
+                    px-4 py-3 rounded-lg border-2 transition-all font-medium text-sm
+                    ${value === option
+                      ? 'border-primary-600 bg-primary-600 text-white shadow-md ring-2 ring-primary-300'
+                      : 'border-gray-300 bg-white text-gray-700 hover:border-primary-400 hover:bg-primary-50'
+                    }
+                  `}
+                >
+                  {option}
+                </button>
+              ))}
+            </div>
+          </div>
+        );
+
+      case 'die_shape_selector':
+        return (
+          <div className="bg-white rounded-lg shadow-md p-6" key={key}>
+            <h2 className="text-xl font-semibold text-gray-900 mb-4">
+              {filter.label}
+              {filter.required && <span className="text-red-500 ml-1">*</span>}
+            </h2>
+            <DieShapeSelector
+              options={filter.options}
+              selected={value || filter.default}
+              onChange={(shapeId) => handleCategoryFilterChange(key, shapeId)}
+            />
+          </div>
+        );
+
+      case 'text':
+        return (
+          <div className="bg-white rounded-lg shadow-md p-6" key={key}>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              {filter.label}
+              {filter.required && <span className="text-red-500 ml-1">*</span>}
+            </label>
+            <input
+              type="text"
+              value={value || ''}
+              onChange={(e) => handleCategoryFilterChange(key, e.target.value)}
+              className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+              required={filter.required}
+            />
+          </div>
+        );
+
+      case 'number':
+        return (
+          <div className="bg-white rounded-lg shadow-md p-6" key={key}>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              {filter.label}
+              {filter.required && <span className="text-red-500 ml-1">*</span>}
+            </label>
+            <input
+              type="number"
+              value={value || ''}
+              onChange={(e) => handleCategoryFilterChange(key, e.target.value)}
+              className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+              required={filter.required}
+            />
+          </div>
+        );
+
+      default:
+        return null;
+    }
   };
 
   const getNextTierInfo = () => {
@@ -584,6 +738,11 @@ export default function ProductConfiguratorPage({ params }: { params: { id: stri
                 )}
               </div>
             </div>
+
+            {/* Category Config Filters - Dynamic filters based on category configuration */}
+            {categoryConfig?.filters && Object.entries(categoryConfig.filters).map(([key, filter]) =>
+              renderCategoryFilter(key, filter)
+            )}
 
             {/* Material Options */}
             {priceModel.material_options && Object.keys(priceModel.material_options).length > 0 && (

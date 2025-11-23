@@ -216,7 +216,7 @@ ON CONFLICT (key) DO NOTHING;
 -- Insert category filter configurations
 INSERT INTO category_config (category, filters, description) VALUES
 (
-    'Visiting Cards',
+    'Visiting Card',
     '{
         "printing": {
             "label": "Printing",
