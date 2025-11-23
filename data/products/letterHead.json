@@ -1,0 +1,68 @@
+[
+  {
+    "productCode": "172",
+    "productName": "70 GSM, Maplitho Paper",
+    "category": "Letter Head",
+    "subCategory": null,
+    "imageSrc": "https://printersclub.in/images/cat-images/70%20GSM%20M.png",
+    "attributes": {
+      "Product Code": "LH-1",
+      "Paper Quality": "70 GSM, Maplitho Paper",
+      "Utility": "For Official Use",
+      "Production Time": "3 day"
+    }
+  },
+  {
+    "productCode": "173",
+    "productName": "90 GSM, Sunshine Paper",
+    "category": "Letter Head",
+    "subCategory": null,
+    "imageSrc": "https://printersclub.in/images/cat-images/90%20GSM%20S.png",
+    "attributes": {
+      "Product Code": "LH-2",
+      "Paper Quality": "90 GSM, Sunshine Paper",
+      "Utility": "For Official Use",
+      "Production Time": "3 day"
+    }
+  },
+  {
+    "productCode": "174",
+    "productName": "100 GSM, Bond Paper",
+    "category": "Letter Head",
+    "subCategory": null,
+    "imageSrc": "https://printersclub.in/images/cat-images/100%20GSM%20B.png",
+    "attributes": {
+      "Product Code": "LH-3",
+      "Paper Quality": "100 GSM, Bond Paper",
+      "Utility": "For Official Use",
+      "Production Time": "3 day"
+    }
+  },
+  {
+    "productCode": "175",
+    "productName": "100 GSM, Deo Paper",
+    "category": "Letter Head",
+    "subCategory": null,
+    "imageSrc": "https://printersclub.in/images/cat-images/100%20GSM%20D.png",
+    "attributes": {
+      "Product Code": "LH-4",
+      "Paper Quality": "100 GSM, Deo Paper",
+      "Utility": "For Office Letters",
+      "Production Time": "4 day"
+    }
+  },
+  {
+    "productCode": "176",
+    "productName": "115 GSM, Sunshine Paper",
+    "category": "Letter Head",
+    "subCategory": null,
+    "imageSrc": "https://printersclub.in/images/cat-images/n115%20S.jpg",
+    "attributes": {
+      "Product Code": "LH-5",
+      "Paper Quality": "115 GSM, Sunshine Paper",
+      "Utility": "For Office Letters",
+      "Production Time": "4 day"
+    }
+  }
+]
+

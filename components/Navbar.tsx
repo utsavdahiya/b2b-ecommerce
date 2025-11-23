@@ -14,6 +14,7 @@ export default function Navbar() {
   const [productsMenuOpen, setProductsMenuOpen] = useState(false);
   const [mobileProductsMenuOpen, setMobileProductsMenuOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const closeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     fetchUser();
@@ -71,6 +72,20 @@ export default function Navbar() {
       .join(' ');
   };
 
+  const handleProductsMouseEnter = () => {
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current);
+      closeTimeoutRef.current = null;
+    }
+    setProductsMenuOpen(true);
+  };
+
+  const handleProductsMouseLeave = () => {
+    closeTimeoutRef.current = setTimeout(() => {
+      setProductsMenuOpen(false);
+    }, 300); // 300ms delay before closing
+  };
+
   const handleCategoryClick = (category: string) => {
     const url = category === 'all' ? '/products' : `/products?category=${category}`;
     router.push(url);
@@ -107,8 +122,8 @@ export default function Navbar() {
                 {/* Products with Dropdown */}
                 <div className="relative" ref={dropdownRef}>
                   <button
-                    onMouseEnter={() => setProductsMenuOpen(true)}
-                    onMouseLeave={() => setProductsMenuOpen(false)}
+                    onMouseEnter={handleProductsMouseEnter}
+                    onMouseLeave={handleProductsMouseLeave}
                     className={`text-gray-700 hover:text-primary-600 transition-colors flex items-center space-x-1 ${
                       pathname === '/products' ? 'text-primary-600 font-semibold' : ''
                     }`}
@@ -132,8 +147,8 @@ export default function Navbar() {
                   {productsMenuOpen && (
                     <div
                       className="absolute top-full left-0 mt-1 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50"
-                      onMouseEnter={() => setProductsMenuOpen(true)}
-                      onMouseLeave={() => setProductsMenuOpen(false)}
+                      onMouseEnter={handleProductsMouseEnter}
+                      onMouseLeave={handleProductsMouseLeave}
                     >
                       <button
                         onClick={() => handleCategoryClick('all')}

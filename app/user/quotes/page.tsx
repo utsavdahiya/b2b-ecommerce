@@ -173,7 +173,7 @@ export default function QuotesPage() {
                       {formatStatus(isExpired(quote.valid_until) ? 'expired' : quote.status)}
                     </span>
                     <span className="text-xl font-bold text-primary-600">
-                      ${quote.total_price.toFixed(2)}
+                      ₹{quote.total_price.toFixed(2)}
                     </span>
                   </div>
                 </div>
@@ -186,11 +186,11 @@ export default function QuotesPage() {
                         <div>
                           <p className="font-medium text-gray-900">{item.product_name}</p>
                           <p className="text-gray-500">
-                            Quantity: {item.quantity} × ${item.unit_price.toFixed(2)}
+                            Quantity: {item.quantity} × ₹{item.unit_price.toFixed(2)}
                           </p>
                         </div>
                         <p className="font-medium text-gray-900">
-                          ${item.subtotal.toFixed(2)}
+                          ₹{item.subtotal.toFixed(2)}
                         </p>
                       </div>
                     ))}

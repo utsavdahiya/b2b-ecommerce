@@ -124,7 +124,7 @@ export default function OrdersPage() {
                       {formatStatus(order.status)}
                     </span>
                     <span className="text-xl font-bold text-primary-600">
-                      ${Number(order.total_price).toFixed(2)}
+                      ₹{Number(order.total_price).toFixed(2)}
                     </span>
                   </div>
                 </div>
@@ -136,11 +136,11 @@ export default function OrdersPage() {
                       <div>
                         <p className="font-medium text-gray-900">{item.product_name}</p>
                         <p className="text-gray-500">
-                          Quantity: {item.quantity} × ${Number(item.unit_price).toFixed(2)}
+                          Quantity: {item.quantity} × ₹{Number(item.unit_price).toFixed(2)}
                         </p>
                       </div>
                       <p className="font-medium text-gray-900">
-                        ${Number(item.subtotal).toFixed(2)}
+                        ₹{Number(item.subtotal).toFixed(2)}
                       </p>
                     </div>
                   ))}

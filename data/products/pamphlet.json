@@ -1,0 +1,113 @@
+[
+  {
+    "productCode": "226",
+    "productName": "Pamphlet - 70 GSM Maplitho Paper",
+    "category": "Pamphlet",
+    "subCategory": "Flyer",
+    "imageSrc": "https://printersclub.in/images/product-images/228_PMP%20D.jpg",
+    "attributes": {
+      "Product Code": "PP-3",
+      "Product Class": "Regular",
+      "Product Size": "Letter Size (8.5\" X 11\")",
+      "Production Time": "Within 48 hours from file upload",
+      "Paper Quality": "70 GSM Maplitho Paper",
+      "Printing Options": "Single / Both Side",
+      "Special Features": "Printing with latest Komori offset machines (2023 Model)"
+    }
+  },
+  {
+    "productCode": "227",
+    "productName": "Pamphlet - 90 GSM Art Paper",
+    "category": "Pamphlet",
+    "subCategory": "Flyer",
+    "imageSrc": "https://printersclub.in/images/product-images/228_PMP%20QTY.jpg",
+    "attributes": {
+      "Product Code": "PP-3",
+      "Product Class": "Regular",
+      "Product Size": "Letter Size (8.5\" X 11\")",
+      "Production Time": "Within 48 hours from file upload",
+      "Paper Quality": "90 GSM Art Paper",
+      "Printing Options": "Single / Both Side",
+      "Special Features": "Printing with latest Komori offset machines (2023 Model)"
+    }
+  },
+  {
+    "productCode": "228",
+    "productName": "Pamphlet - 115 GSM Art Paper",
+    "category": "Pamphlet",
+    "subCategory": "Flyer",
+    "imageSrc": "https://printersclub.in/images/product-images/228_PMP%20QTY%20B.jpg",
+    "attributes": {
+      "Product Code": "PP-3",
+      "Product Class": "Regular",
+      "Product Size": "Letter Size (8.5\" X 11\")",
+      "Production Time": "Within 48 hours from file upload",
+      "Paper Quality": "115 GSM Art Paper",
+      "Printing Options": "Single / Both Side",
+      "Special Features": "Printing with latest Komori offset machines (2023 Model)",
+      "Note": "Constant quality with reasonable price"
+    }
+  },
+  {
+    "productCode": "229",
+    "productName": "Pamphlet - 170 GSM Art Paper",
+    "category": "Pamphlet",
+    "subCategory": "Flyer",
+    "imageSrc": "https://printersclub.in/images/product-images/228_PMP%20D.jpg",
+    "attributes": {
+      "Product Code": "PP-3",
+      "Product Class": "Regular",
+      "Product Size": "Letter Size (8.5\" X 11\")",
+      "Production Time": "Within 48 hours from file upload",
+      "Paper Quality": "170 GSM Art Paper",
+      "Printing Options": "Single / Both Side",
+      "Special Features": "Printing with latest Komori offset machines (2023 Model)"
+    }
+  },
+  {
+    "productCode": "230",
+    "productName": "Poster - 15x20",
+    "category": "Pamphlet",
+    "subCategory": "Poster",
+    "imageSrc": "https://printersclub.in/images/product-images/232_Poster%20gh4.jpg",
+    "attributes": {
+      "Product Code": "PP-5",
+      "Printing Size": "14.4\" X 19.4\"",
+      "Production Time": "Within 48 hours from file upload",
+      "Printing Options": "Single / Both Side",
+      "Paper Quality Options": "70 GSM Maplitho / 90 GSM Art Paper / 115 GSM Art Paper / 170 GSM Art Paper",
+      "Special Features": "Printing with latest Komori offset machines (2023 Model)"
+    }
+  },
+  {
+    "productCode": "231",
+    "productName": "Poster - 18x23",
+    "category": "Pamphlet",
+    "subCategory": "Poster",
+    "imageSrc": "https://printersclub.in/images/product-images/232_Poster%20gh.jpg",
+    "attributes": {
+      "Product Code": "PP-5",
+      "Printing Size": "Custom Size",
+      "Production Time": "Within 48 hours from file upload",
+      "Printing Options": "Single / Both Side",
+      "Paper Quality Options": "70 GSM Maplitho / 90 GSM Art Paper / 115 GSM Art Paper / 170 GSM Art Paper",
+      "Special Features": "Printing with latest Komori offset machines (2023 Model)"
+    }
+  },
+  {
+    "productCode": "232",
+    "productName": "Poster - 20x30",
+    "category": "Pamphlet",
+    "subCategory": "Poster",
+    "imageSrc": "https://printersclub.in/images/product-images/232_Poster%20gh4.jpg",
+    "attributes": {
+      "Product Code": "PP-5",
+      "Printing Size": "Custom Size",
+      "Production Time": "Within 48 hours from file upload",
+      "Printing Options": "Single / Both Side",
+      "Paper Quality Options": "70 GSM Maplitho / 90 GSM Art Paper / 115 GSM Art Paper / 170 GSM Art Paper",
+      "Special Features": "Printing with latest Komori offset machines (2023 Model)",
+      "Note": "Constant quality with reasonable price"
+    }
+  }
+]

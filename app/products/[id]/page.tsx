@@ -544,7 +544,7 @@ export default function ProductConfiguratorPage({ params }: { params: { id: stri
                               </span>
                             </span>
                             <span className="flex items-center gap-2">
-                              <span className="font-bold">${tier.price_per_unit.toFixed(2)} each</span>
+                              <span className="font-bold">₹{tier.price_per_unit.toFixed(2)} each</span>
                               {savings !== '0' && (
                                 <span className={`text-xs px-2 py-1 rounded-full ${
                                   isCurrentTier ? 'bg-white/20' : 'bg-green-100 text-green-700'
@@ -566,10 +566,10 @@ export default function ProductConfiguratorPage({ params }: { params: { id: stri
                             <path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z" />
                             <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z" clipRule="evenodd" />
                           </svg>
-                          Add {nextTierInfo.unitsNeeded} more units and save ${nextTierInfo.totalSavings.toFixed(2)}!
+                          Add {nextTierInfo.unitsNeeded} more units and save ₹{nextTierInfo.totalSavings.toFixed(2)}!
                         </p>
                         <p className="text-xs mt-1 opacity-90">
-                          Next tier: ${nextTierInfo.nextTierPrice.toFixed(2)} per unit
+                          Next tier: ₹{nextTierInfo.nextTierPrice.toFixed(2)} per unit
                         </p>
                       </div>
                     )}
@@ -603,7 +603,7 @@ export default function ProductConfiguratorPage({ params }: { params: { id: stri
                             Standard - Included
                           </span>
                         ) : (
-                          `+$${value.toFixed(2)} per unit`
+                          `+₹${value.toFixed(2)} per unit`
                         )}
                       </div>
                     </button>
@@ -629,7 +629,7 @@ export default function ProductConfiguratorPage({ params }: { params: { id: stri
                     >
                       <div className="font-semibold text-gray-900 uppercase">{key.replace('_', ' ')}</div>
                       <div className={`text-sm mt-1 ${config.size === key ? 'text-primary-700' : 'text-gray-600'}`}>
-                        {value === 0 ? 'Standard' : value > 0 ? `+$${value.toFixed(2)}` : `$${value.toFixed(2)}`}
+                        {value === 0 ? 'Standard' : value > 0 ? `+₹${value.toFixed(2)}` : `₹${value.toFixed(2)}`}
                       </div>
                     </button>
                   ))}
@@ -655,7 +655,7 @@ export default function ProductConfiguratorPage({ params }: { params: { id: stri
                       <div className="flex justify-between items-center">
                         <span className="font-semibold text-gray-900">{formatOptionName(key)}</span>
                         <span className={`text-sm ${config.paper === key ? 'text-primary-700 font-medium' : 'text-gray-600'}`}>
-                          {value > 0 ? `+$${value.toFixed(2)}` : 'Included'}
+                          {value > 0 ? `+₹${value.toFixed(2)}` : 'Included'}
                         </span>
                       </div>
                     </button>
@@ -681,7 +681,7 @@ export default function ProductConfiguratorPage({ params }: { params: { id: stri
                     >
                       <div className="font-semibold text-gray-900">{formatOptionName(key)}</div>
                       <div className={`text-sm mt-1 ${config.fold === key ? 'text-primary-700' : 'text-gray-600'}`}>
-                        {value > 0 ? `+$${value.toFixed(2)}` : 'Included'}
+                        {value > 0 ? `+₹${value.toFixed(2)}` : 'Included'}
                       </div>
                     </button>
                   ))}
@@ -707,7 +707,7 @@ export default function ProductConfiguratorPage({ params }: { params: { id: stri
                       <div className="flex justify-between items-center">
                         <span className="font-semibold text-gray-900">{formatOptionName(key)}</span>
                         <span className={`text-sm ${config.printing === key ? 'text-primary-700 font-medium' : 'text-gray-600'}`}>
-                          {value > 0 ? `+$${value.toFixed(2)}` : 'Included'}
+                          {value > 0 ? `+₹${value.toFixed(2)}` : 'Included'}
                         </span>
                       </div>
                     </button>
@@ -748,7 +748,7 @@ export default function ProductConfiguratorPage({ params }: { params: { id: stri
                         </span>
                       </div>
                       <span className={`text-sm font-medium ${config.finishing.includes(key) ? 'text-primary-700' : 'text-gray-600'}`}>
-                        +${value.toFixed(2)}
+                        +₹{value.toFixed(2)}
                       </span>
                     </label>
                   ))}
@@ -768,23 +768,23 @@ export default function ProductConfiguratorPage({ params }: { params: { id: stri
                   {price.basePrice > 0 && (
                     <div className="flex justify-between text-sm">
                       <span className="text-gray-600">Setup Fee:</span>
-                      <span className="font-medium text-gray-900">${price.basePrice.toFixed(2)}</span>
+                      <span className="font-medium text-gray-900">₹{price.basePrice.toFixed(2)}</span>
                     </div>
                   )}
 
                   {/* Quantity Price */}
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">
-                      Base ({config.quantity} × ${price.pricePerUnit.toFixed(2)}):
+                      Base ({config.quantity} × ₹{price.pricePerUnit.toFixed(2)}):
                     </span>
-                    <span className="font-medium text-gray-900">${price.quantityPrice.toFixed(2)}</span>
+                    <span className="font-medium text-gray-900">₹{price.quantityPrice.toFixed(2)}</span>
                   </div>
 
                   {/* Material Price */}
                   {price.materialPrice > 0 && (
                     <div className="flex justify-between text-sm">
                       <span className="text-gray-600">Material ({formatOptionName(config.material)}):</span>
-                      <span className="font-medium text-gray-900">+${price.materialPrice.toFixed(2)}</span>
+                      <span className="font-medium text-gray-900">+₹{price.materialPrice.toFixed(2)}</span>
                     </div>
                   )}
 
@@ -793,7 +793,7 @@ export default function ProductConfiguratorPage({ params }: { params: { id: stri
                     <div className="flex justify-between text-sm">
                       <span className="text-gray-600">Size ({config.size.toUpperCase().replace('_', ' ')}):</span>
                       <span className="font-medium text-gray-900">
-                        {price.sizePrice > 0 ? '+' : ''}${price.sizePrice.toFixed(2)}
+                        {price.sizePrice > 0 ? '+' : ''}₹{price.sizePrice.toFixed(2)}
                       </span>
                     </div>
                   )}
@@ -802,7 +802,7 @@ export default function ProductConfiguratorPage({ params }: { params: { id: stri
                   {price.otherOptionsPrice > 0 && (
                     <div className="flex justify-between text-sm">
                       <span className="text-gray-600">Other Options:</span>
-                      <span className="font-medium text-gray-900">+${price.otherOptionsPrice.toFixed(2)}</span>
+                      <span className="font-medium text-gray-900">+₹{price.otherOptionsPrice.toFixed(2)}</span>
                     </div>
                   )}
 
@@ -810,7 +810,7 @@ export default function ProductConfiguratorPage({ params }: { params: { id: stri
                   {price.finishingPrice > 0 && (
                     <div className="flex justify-between text-sm">
                       <span className="text-gray-600">Finishing:</span>
-                      <span className="font-medium text-gray-900">+${price.finishingPrice.toFixed(2)}</span>
+                      <span className="font-medium text-gray-900">+₹{price.finishingPrice.toFixed(2)}</span>
                     </div>
                   )}
 
@@ -824,7 +824,7 @@ export default function ProductConfiguratorPage({ params }: { params: { id: stri
                           </svg>
                           You Save:
                         </span>
-                        <span className="font-bold">${price.savings.toFixed(2)}</span>
+                        <span className="font-bold">₹{price.savings.toFixed(2)}</span>
                       </div>
                     </div>
                   )}
@@ -834,11 +834,11 @@ export default function ProductConfiguratorPage({ params }: { params: { id: stri
                     <div className="flex justify-between items-center mb-2">
                       <span className="text-lg font-semibold text-gray-900">Total:</span>
                       <span className="text-3xl font-bold text-primary-600">
-                        ${price.totalPrice.toFixed(2)}
+                        ₹{price.totalPrice.toFixed(2)}
                       </span>
                     </div>
                     <p className="text-xs text-gray-500 text-right">
-                      ${(price.totalPrice / config.quantity).toFixed(2)} per unit
+                      ₹{(price.totalPrice / config.quantity).toFixed(2)} per unit
                     </p>
                   </div>
                 </div>
@@ -893,7 +893,7 @@ export default function ProductConfiguratorPage({ params }: { params: { id: stri
                     <path d="M8 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM15 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" />
                     <path d="M3 4a1 1 0 00-1 1v10a1 1 0 001 1h1.05a2.5 2.5 0 014.9 0H10a1 1 0 001-1V5a1 1 0 00-1-1H3zM14 7a1 1 0 00-1 1v6.05A2.5 2.5 0 0115.95 16H17a1 1 0 001-1v-5a1 1 0 00-.293-.707l-2-2A1 1 0 0015 7h-1z" />
                   </svg>
-                  Free shipping on orders over $500
+                  Free shipping on orders over ₹5000
                 </p>
                 <p className="flex items-center">
                   <svg className="w-4 h-4 mr-2 text-purple-600" fill="currentColor" viewBox="0 0 20 20">

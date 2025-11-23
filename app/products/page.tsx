@@ -2,7 +2,7 @@
 
 import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import Link from 'next/link';
+import ProductCard from './ProductCard';
 
 interface Product {
   id: number;
@@ -51,6 +51,28 @@ function ProductsContent() {
     selectedCategory === 'all'
       ? products
       : products.filter(p => p.category === selectedCategory);
+
+  // Group products by sub-category
+  const groupProductsBySubCategory = (products: Product[]) => {
+    const grouped: { [key: string]: Product[] } = {};
+    const withoutSubCategory: Product[] = [];
+
+    products.forEach(product => {
+      if (product.sub_category && product.sub_category.trim() !== '') {
+        if (!grouped[product.sub_category]) {
+          grouped[product.sub_category] = [];
+        }
+        grouped[product.sub_category].push(product);
+      } else {
+        withoutSubCategory.push(product);
+      }
+    });
+
+    return { grouped, withoutSubCategory };
+  };
+
+  const { grouped: groupedProducts, withoutSubCategory } = groupProductsBySubCategory(filteredProducts);
+  const subCategories = Object.keys(groupedProducts).sort();
 
   const handleCategoryChange = (category: string) => {
     setSelectedCategory(category);
@@ -137,116 +159,60 @@ function ProductsContent() {
             <p className="text-gray-500 text-lg">No products available in this category.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredProducts.map(product => (
-              <Link
-                key={product.id}
-                href={`/products/${product.id}`}
-                className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow overflow-hidden group"
-              >
-                {/* Product Image */}
-                <div className="h-48 bg-gradient-to-br from-primary-100 to-primary-200 flex items-center justify-center group-hover:from-primary-200 group-hover:to-primary-300 transition-colors overflow-hidden">
-                  {product.image_urls && product.image_urls.length > 0 ? (
-                    <img 
-                      src={product.image_urls[0]} 
-                      alt={product.name}
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        // Fallback to SVG icon if image fails to load
-                        e.currentTarget.style.display = 'none';
-                        if (e.currentTarget.nextElementSibling) {
-                          (e.currentTarget.nextElementSibling as HTMLElement).style.display = 'flex';
-                        }
-                      }}
-                    />
-                  ) : null}
-                  <svg
-                    className="w-24 h-24 text-primary-600 opacity-50"
-                    style={{ display: product.image_urls && product.image_urls.length > 0 ? 'none' : 'block' }}
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                    />
-                  </svg>
-                </div>
-
-                {/* Product Info */}
-                <div className="p-6">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <h3 className="text-xl font-semibold text-gray-900 group-hover:text-primary-600 transition-colors">
-                        {product.name}
-                      </h3>
-                      {product.sub_category ? (
-                        <p className="mt-1 text-sm font-medium text-primary-600">
-                          {product.sub_category}
-                        </p>
-                      ) : (
-                        <p className="mt-1 text-sm text-gray-500">
-                          {formatCategoryName(product.category)}
-                        </p>
-                      )}
-                      {product.product_code && (
-                        <p className="mt-1 text-xs text-gray-400">
-                          Code: {product.product_code}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-
-                  <p className="mt-3 text-gray-600 line-clamp-2">
-                    {product.description}
+          <div className="space-y-12">
+            {/* Render products grouped by sub-category first */}
+            {subCategories.map(subCategory => (
+              <div key={subCategory} className="space-y-4">
+                {/* Sub-category header */}
+                <div className="border-b border-gray-200 pb-2">
+                  <h2 className="text-2xl font-bold text-gray-900">
+                    {formatCategoryName(subCategory)}
+                  </h2>
+                  <p className="text-sm text-gray-500 mt-1">
+                    {groupedProducts[subCategory].length} {groupedProducts[subCategory].length === 1 ? 'product' : 'products'}
                   </p>
-
-                  {/* Product Attributes */}
-                  {product.attributes && Object.keys(product.attributes).length > 0 && (
-                    <div className="mt-3 space-y-1">
-                      {Object.entries(product.attributes).slice(0, 3).map(([key, value]) => (
-                        <div key={key} className="flex items-start text-xs">
-                          <span className="text-gray-500 mr-1">{key}:</span>
-                          <span className="text-gray-700 font-medium line-clamp-1">{value}</span>
-                        </div>
-                      ))}
-                      {Object.keys(product.attributes).length > 3 && (
-                        <p className="text-xs text-primary-600">+ {Object.keys(product.attributes).length - 3} more</p>
-                      )}
-                    </div>
-                  )}
-
-                  <div className="mt-4 flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-gray-500">Starting from</p>
-                      <p className="text-2xl font-bold text-primary-600">
-                        ${getStartingPrice(product)}
-                      </p>
-                      <p className="text-xs text-gray-500">Min. {getMinQuantity(product)} units</p>
-                    </div>
-
-                    <div className="text-primary-600 group-hover:translate-x-1 transition-transform">
-                      <svg
-                        className="w-6 h-6"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M9 5l7 7-7 7"
-                        />
-                      </svg>
-                    </div>
-                  </div>
                 </div>
-              </Link>
+                
+                {/* Products grid for this sub-category */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {groupedProducts[subCategory].map(product => (
+                    <ProductCard
+                      key={product.id}
+                      product={product}
+                      getStartingPrice={getStartingPrice}
+                      getMinQuantity={getMinQuantity}
+                    />
+                  ))}
+                </div>
+              </div>
             ))}
+
+            {/* Render products without sub-category in "Others" section */}
+            {withoutSubCategory.length > 0 && (
+              <div className="space-y-4">
+                {/* Others section header */}
+                <div className="border-b border-gray-200 pb-2">
+                  <h2 className="text-2xl font-bold text-gray-900">
+                    Others
+                  </h2>
+                  <p className="text-sm text-gray-500 mt-1">
+                    {withoutSubCategory.length} {withoutSubCategory.length === 1 ? 'product' : 'products'}
+                  </p>
+                </div>
+                
+                {/* Products grid for others */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {withoutSubCategory.map(product => (
+                    <ProductCard
+                      key={product.id}
+                      product={product}
+                      getStartingPrice={getStartingPrice}
+                      getMinQuantity={getMinQuantity}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>

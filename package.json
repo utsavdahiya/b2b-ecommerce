@@ -8,7 +8,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "ingest:visiting-cards": "tsx scripts/ingest-visiting-cards.ts"
+    "ingest:visiting-cards": "tsx scripts/ingest-visiting-cards.ts",
+    "ingest:letter-head": "tsx scripts/ingest-letter-head.ts"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

@@ -87,7 +87,7 @@ export default function WhatsAppButton() {
             cart.items.forEach((item, index) => {
               message += `${index + 1}. ${item.product_name}\n`;
               message += `   Quantity: ${item.quantity}\n`;
-              message += `   Price: $${item.unit_price.toFixed(2)} each\n`;
+              message += `   Price: ₹${item.unit_price.toFixed(2)} each\n`;
               
               // Add configuration details if available
               if (item.configuration && Object.keys(item.configuration).length > 0) {
@@ -102,7 +102,7 @@ export default function WhatsAppButton() {
               message += `\n`;
             });
             
-            message += `*Total: $${cart.total.toFixed(2)}*\n\n`;
+            message += `*Total: ₹${cart.total.toFixed(2)}*\n\n`;
             message += `Could you please provide more information or help me proceed with this order?`;
             
             return message;
