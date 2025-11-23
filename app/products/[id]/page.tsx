@@ -44,6 +44,8 @@ export default function ProductConfiguratorPage({ params }: { params: { id: stri
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [imageZoomed, setImageZoomed] = useState(false);
   const [categoryConfig, setCategoryConfig] = useState<CategoryConfig | null>(null);
+  const [uploadingFile, setUploadingFile] = useState(false);
+  const [uploadedFile, setUploadedFile] = useState<{ url: string; name: string; size: number } | null>(null);
 
   // Configuration state
   const [config, setConfig] = useState<any>({
@@ -54,6 +56,7 @@ export default function ProductConfiguratorPage({ params }: { params: { id: stri
     finishing: [],
     fold: '',
     printing: '',
+    uploadedFile: null,
   });
 
   // Price calculation state
@@ -328,6 +331,90 @@ export default function ProductConfiguratorPage({ params }: { params: { id: stri
     setConfig((prev: any) => ({
       ...prev,
       [key]: value,
+    }));
+  };
+
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setUploadingFile(true);
+    setMessage(null);
+
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      console.log('[File Upload] Starting upload...', {
+        fileName: file.name,
+        fileSize: file.size,
+        fileType: file.type,
+      });
+
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const data = await res.json();
+
+      // Debug logging - expand the data object
+      console.log('[File Upload] API Response Status:', res.status, res.statusText);
+      console.log('[File Upload] API Response Data:', JSON.stringify(data, null, 2));
+      console.log('[File Upload] Full Response Object:', {
+        status: res.status,
+        statusText: res.statusText,
+        ok: res.ok,
+        data: data,
+      });
+
+      if (res.status === 401) {
+        router.push(`/auth/login?redirect=${encodeURIComponent(window.location.pathname)}`);
+        return;
+      }
+
+      if (!res.ok) {
+        console.error('[File Upload] Upload failed:', {
+          status: res.status,
+          statusText: res.statusText,
+          error: data.error,
+          debug: data.debug,
+          details: data.details,
+          fullResponse: data,
+        });
+        
+        // Show more detailed error message if available
+        const errorMessage = data.error || 'Failed to upload file';
+        const debugInfo = data.debug ? `\n\nDebug Info:\n${JSON.stringify(data.debug, null, 2)}` : '';
+        throw new Error(errorMessage + debugInfo);
+      }
+
+      setUploadedFile({
+        url: data.fileUrl,
+        name: data.fileName,
+        size: data.fileSize,
+      });
+
+      setConfig((prev: any) => ({
+        ...prev,
+        uploadedFile: data.fileUrl,
+      }));
+
+      setMessage({ type: 'success', text: 'File uploaded successfully!' });
+    } catch (error: any) {
+      setMessage({ type: 'error', text: error.message || 'Failed to upload file' });
+    } finally {
+      setUploadingFile(false);
+      // Reset input so the same file can be selected again
+      event.target.value = '';
+    }
+  };
+
+  const handleRemoveFile = () => {
+    setUploadedFile(null);
+    setConfig((prev: any) => ({
+      ...prev,
+      uploadedFile: null,
     }));
   };
 
@@ -632,6 +719,86 @@ export default function ProductConfiguratorPage({ params }: { params: { id: stri
                   </div>
                 )}
               </div>
+            </div>
+
+            {/* File Upload Section */}
+            <div className="bg-white rounded-lg shadow-md p-6">
+              <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+                <svg className="w-6 h-6 mr-2 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                </svg>
+                Upload Your File
+              </h2>
+              <p className="text-sm text-gray-600 mb-4">
+                Upload your design file (images, PDF, or documents). Accepted formats: JPG, PNG, GIF, WebP, SVG, PDF, DOC, DOCX. Max size: 10MB
+              </p>
+              
+              {!uploadedFile ? (
+                <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 hover:border-primary-400 transition-colors">
+                  <label className="flex flex-col items-center justify-center cursor-pointer">
+                    <input
+                      type="file"
+                      onChange={handleFileUpload}
+                      disabled={uploadingFile}
+                      accept="image/*,.pdf,.doc,.docx"
+                      className="hidden"
+                    />
+                    {uploadingFile ? (
+                      <div className="flex flex-col items-center">
+                        <svg className="animate-spin h-8 w-8 text-primary-600 mb-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <span className="text-sm text-gray-600">Uploading...</span>
+                      </div>
+                    ) : (
+                      <div className="flex flex-col items-center">
+                        <svg className="w-12 h-12 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                        </svg>
+                        <span className="text-sm font-medium text-gray-700">Click to upload or drag and drop</span>
+                        <span className="text-xs text-gray-500 mt-1">Max 10MB</span>
+                      </div>
+                    )}
+                  </label>
+                </div>
+              ) : (
+                <div className="border-2 border-green-200 bg-green-50 rounded-lg p-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center flex-1 min-w-0">
+                      <svg className="w-8 h-8 text-green-600 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-gray-900 truncate">{uploadedFile.name}</p>
+                        <p className="text-xs text-gray-500">
+                          {(uploadedFile.size / 1024 / 1024).toFixed(2)} MB
+                        </p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={handleRemoveFile}
+                      className="ml-4 p-2 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors"
+                      title="Remove file"
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+                  <a
+                    href={uploadedFile.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-2 inline-flex items-center text-sm text-primary-600 hover:text-primary-700"
+                  >
+                    <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                    View uploaded file
+                  </a>
+                </div>
+              )}
             </div>
 
             {/* Category Config Filters - Dynamic filters based on category configuration */}
