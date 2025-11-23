@@ -84,6 +84,16 @@ CREATE TABLE IF NOT EXISTS config (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Category Config table: Stores category-specific filter configurations
+CREATE TABLE IF NOT EXISTS category_config (
+    id SERIAL PRIMARY KEY,
+    category VARCHAR(100) UNIQUE NOT NULL,
+    filters JSONB NOT NULL DEFAULT '{}',
+    description TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Create indexes for better query performance
 CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
 CREATE INDEX IF NOT EXISTS idx_carts_user_id ON carts(user_id);
@@ -94,6 +104,7 @@ CREATE INDEX IF NOT EXISTS idx_order_items_order_id ON order_items(order_id);
 CREATE INDEX IF NOT EXISTS idx_products_category ON products(category);
 CREATE INDEX IF NOT EXISTS idx_products_is_active ON products(is_active);
 CREATE INDEX IF NOT EXISTS idx_config_key ON config(key);
+CREATE INDEX IF NOT EXISTS idx_category_config_category ON category_config(category);
 
 -- Create updated_at trigger function
 CREATE OR REPLACE FUNCTION update_updated_at_column()
@@ -127,5 +138,9 @@ CREATE TRIGGER update_orders_updated_at BEFORE UPDATE ON orders
 
 DROP TRIGGER IF EXISTS update_config_updated_at ON config;
 CREATE TRIGGER update_config_updated_at BEFORE UPDATE ON config
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+DROP TRIGGER IF EXISTS update_category_config_updated_at ON category_config;
+CREATE TRIGGER update_category_config_updated_at BEFORE UPDATE ON category_config
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 

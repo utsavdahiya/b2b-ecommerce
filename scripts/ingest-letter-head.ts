@@ -18,7 +18,7 @@ interface LetterHead {
   category: string;
   subCategory: string | null;
   imageSrc: string;
-  attributes: Record<string, string>;
+  attributes: Record<string, string | undefined>;
 }
 
 async function ingestLetterHead() {
@@ -29,6 +29,10 @@ async function ingestLetterHead() {
   let errorCount = 0;
 
   for (const item of letterHeadData as LetterHead[]) {
+    // Filter out undefined values from attributes
+    const cleanedAttributes = Object.fromEntries(
+      Object.entries(item.attributes).filter(([_, value]) => value !== undefined)
+    ) as Record<string, string>;
     try {
       // Create a default base_price_model for letter head
       // Pricing based on typical letter head production costs
@@ -46,7 +50,7 @@ async function ingestLetterHead() {
       const existingProduct = await query(
         `SELECT id FROM products 
          WHERE product_code = $1 AND category = $2`,
-        [item.attributes['Product Code'], item.category]
+        [cleanedAttributes['Product Code'], item.category]
       );
 
       if (existingProduct.rows.length > 0) {
@@ -64,7 +68,7 @@ async function ingestLetterHead() {
             item.productName,
             `${item.productName} - Professional letter head printing`,
             [item.imageSrc],
-            JSON.stringify(item.attributes),
+            JSON.stringify(cleanedAttributes),
             item.subCategory,
             existingProduct.rows[0].id
           ]
@@ -88,14 +92,14 @@ async function ingestLetterHead() {
             is_active
           ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
           [
-            item.attributes['Product Code'],
+            cleanedAttributes['Product Code'],
             item.productName,
             `${item.productName} - Professional letter head printing`,
             item.category,
             item.subCategory,
             JSON.stringify(basePriceModel),
             [item.imageSrc],
-            JSON.stringify(item.attributes),
+            JSON.stringify(cleanedAttributes),
             1000, // Default stock quantity
             3, // Default estimated delivery days (based on production time in data)
             true // is_active

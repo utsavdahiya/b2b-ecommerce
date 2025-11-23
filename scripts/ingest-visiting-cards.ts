@@ -18,7 +18,7 @@ interface VisitingCard {
   category: string;
   subCategory: string;
   imageSrc: string;
-  attributes: Record<string, string>;
+  attributes: Record<string, string | undefined>;
 }
 
 async function ingestVisitingCards() {
@@ -29,6 +29,10 @@ async function ingestVisitingCards() {
   let errorCount = 0;
 
   for (const card of visitingCardsData as VisitingCard[]) {
+    // Filter out undefined values from attributes
+    const cleanedAttributes = Object.fromEntries(
+      Object.entries(card.attributes).filter(([_, value]) => value !== undefined)
+    ) as Record<string, string>;
     try {
       // Create a default base_price_model for visiting cards
       // You may want to customize this based on your pricing needs
@@ -63,7 +67,7 @@ async function ingestVisitingCards() {
             card.productName,
             `${card.productName} - ${card.subCategory}`,
             [card.imageSrc],
-            JSON.stringify(card.attributes),
+            JSON.stringify(cleanedAttributes),
             existingProduct.rows[0].id
           ]
         );
@@ -93,7 +97,7 @@ async function ingestVisitingCards() {
             card.subCategory,
             JSON.stringify(basePriceModel),
             [card.imageSrc],
-            JSON.stringify(card.attributes),
+            JSON.stringify(cleanedAttributes),
             1000, // Default stock quantity
             3, // Default estimated delivery days
             true // is_active
