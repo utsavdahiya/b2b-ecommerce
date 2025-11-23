@@ -3,8 +3,8 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import DieShapeSelector from '@/components/DieShapeSelector';
-import type { CategoryConfig, CategoryFilter } from '@/lib/types/categoryConfig';
+import CategoryFilters from '@/components/CategoryFilters';
+import type { CategoryConfig } from '@/lib/types/categoryConfig';
 
 interface Product {
   id: number;
@@ -324,159 +324,11 @@ export default function ProductConfiguratorPage({ params }: { params: { id: stri
       .join(' ');
   };
 
-  const handleCategoryFilterChange = (key: string, value: any) => {
+  const handleCategoryFilterChange = (key: string, value: string | number) => {
     setConfig((prev: any) => ({
       ...prev,
       [key]: value,
     }));
-  };
-
-  const renderCategoryFilter = (key: string, filter: CategoryFilter) => {
-    const value = config[key];
-
-    switch (filter.type) {
-      case 'select':
-        const optionCount = filter.options.length;
-        
-        // Optimized layouts for better UX
-        if (optionCount <= 2) {
-          // For 2 options: side-by-side toggle buttons
-          return (
-            <div className="bg-white rounded-lg shadow-md p-5" key={key}>
-              <label className="block text-sm font-semibold text-gray-900 mb-3">
-                {filter.label}
-                {filter.required && <span className="text-red-500 ml-1">*</span>}
-              </label>
-              <div className="grid grid-cols-2 gap-3">
-                {filter.options.map((option) => (
-                  <button
-                    key={option}
-                    onClick={() => handleCategoryFilterChange(key, option)}
-                    className={`
-                      px-4 py-2.5 rounded-lg border-2 transition-all font-medium text-sm
-                      ${value === option
-                        ? 'border-primary-600 bg-primary-600 text-white shadow-md'
-                        : 'border-gray-300 bg-white text-gray-700 hover:border-primary-400 hover:bg-primary-50'
-                      }
-                    `}
-                  >
-                    {option}
-                  </button>
-                ))}
-              </div>
-            </div>
-          );
-        } else if (optionCount <= 4) {
-          // For 3-4 options: Compact horizontal button group (best for UV, Foil, Printing)
-          // Shows all options at once for faster selection - better UX than dropdowns
-          return (
-            <div className="bg-white rounded-lg shadow-md p-5" key={key}>
-              <label className="block text-sm font-semibold text-gray-900 mb-3">
-                {filter.label}
-                {filter.required && <span className="text-red-500 ml-1">*</span>}
-              </label>
-              <div className="flex flex-wrap gap-2 sm:gap-3">
-                {filter.options.map((option) => (
-                  <button
-                    key={option}
-                    onClick={() => handleCategoryFilterChange(key, option)}
-                    className={`
-                      flex-1 min-w-[70px] sm:min-w-[90px] max-w-[140px] sm:max-w-none
-                      px-3 sm:px-4 py-2.5 rounded-lg border-2 transition-all font-medium text-sm
-                      active:scale-95
-                      ${value === option
-                        ? 'border-primary-600 bg-primary-600 text-white shadow-md ring-2 ring-primary-200'
-                        : 'border-gray-300 bg-white text-gray-700 hover:border-primary-400 hover:bg-primary-50 hover:shadow-sm'
-                      }
-                    `}
-                  >
-                    {option}
-                  </button>
-                ))}
-              </div>
-            </div>
-          );
-        } else {
-          // For 5+ options: Responsive grid
-          return (
-            <div className="bg-white rounded-lg shadow-md p-5" key={key}>
-              <label className="block text-sm font-semibold text-gray-900 mb-3">
-                {filter.label}
-                {filter.required && <span className="text-red-500 ml-1">*</span>}
-              </label>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                {filter.options.map((option) => (
-                  <button
-                    key={option}
-                    onClick={() => handleCategoryFilterChange(key, option)}
-                    className={`
-                      px-3 py-2.5 rounded-lg border-2 transition-all font-medium text-sm
-                      ${value === option
-                        ? 'border-primary-600 bg-primary-600 text-white shadow-md'
-                        : 'border-gray-300 bg-white text-gray-700 hover:border-primary-400 hover:bg-primary-50'
-                      }
-                    `}
-                  >
-                    {option}
-                  </button>
-                ))}
-              </div>
-            </div>
-          );
-        }
-
-      case 'die_shape_selector':
-        return (
-          <div className="bg-white rounded-lg shadow-md p-6" key={key}>
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">
-              {filter.label}
-              {filter.required && <span className="text-red-500 ml-1">*</span>}
-            </h2>
-            <DieShapeSelector
-              options={filter.options}
-              selected={value || filter.default}
-              onChange={(shapeId) => handleCategoryFilterChange(key, shapeId)}
-            />
-          </div>
-        );
-
-      case 'text':
-        return (
-          <div className="bg-white rounded-lg shadow-md p-6" key={key}>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              {filter.label}
-              {filter.required && <span className="text-red-500 ml-1">*</span>}
-            </label>
-            <input
-              type="text"
-              value={value || ''}
-              onChange={(e) => handleCategoryFilterChange(key, e.target.value)}
-              className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-              required={filter.required}
-            />
-          </div>
-        );
-
-      case 'number':
-        return (
-          <div className="bg-white rounded-lg shadow-md p-6" key={key}>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              {filter.label}
-              {filter.required && <span className="text-red-500 ml-1">*</span>}
-            </label>
-            <input
-              type="number"
-              value={value || ''}
-              onChange={(e) => handleCategoryFilterChange(key, e.target.value)}
-              className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-              required={filter.required}
-            />
-          </div>
-        );
-
-      default:
-        return null;
-    }
   };
 
   const getNextTierInfo = () => {
@@ -783,8 +635,12 @@ export default function ProductConfiguratorPage({ params }: { params: { id: stri
             </div>
 
             {/* Category Config Filters - Dynamic filters based on category configuration */}
-            {categoryConfig?.filters && Object.entries(categoryConfig.filters).map(([key, filter]) =>
-              renderCategoryFilter(key, filter)
+            {categoryConfig?.filters && (
+              <CategoryFilters
+                filters={categoryConfig.filters}
+                values={config}
+                onChange={handleCategoryFilterChange}
+              />
             )}
 
             {/* Material Options */}
