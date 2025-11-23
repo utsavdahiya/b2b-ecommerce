@@ -14,9 +14,8 @@ A modern, mobile-first B2B e-commerce platform for printing services built with 
   - Finishing options
   - And more!
 - **Shopping Cart**: Persistent cart with server-side price validation
-- **Quote Management**: Save cart as formal quotes with validity periods
 - **Order Processing**: Complete checkout with order tracking
-- **User Dashboard**: View orders and quotes history
+- **User Dashboard**: View orders history
 
 ## 🏗️ Architecture
 
@@ -31,14 +30,12 @@ This application follows a **future-proof architecture** designed for easy separ
 │       ├── authService.ts
 │       ├── productService.ts
 │       ├── cartService.ts
-│       ├── quoteService.ts
 │       └── orderService.ts
 ├── app/
 │   ├── api/             # Thin API routes (call services)
 │   │   ├── auth/
 │   │   ├── products/
 │   │   ├── cart/
-│   │   ├── quotes/
 │   │   └── orders/
 │   ├── products/        # Product pages
 │   ├── cart/            # Cart page
@@ -214,11 +211,6 @@ This ensures:
 - `PUT /api/cart` - Update cart item
 - `DELETE /api/cart?itemId=X` - Remove cart item
 
-### Quotes
-- `GET /api/quotes` - Get user's quotes
-- `POST /api/quotes` - Create quote from cart
-- `PUT /api/quotes` - Add quote to cart
-
 ### Orders
 - `GET /api/orders` - Get user's orders
 - `POST /api/orders` - Create order from cart
@@ -233,7 +225,6 @@ Key tables:
 - `products` - Printing products with pricing models (JSON)
 - `carts` & `cart_items` - Shopping cart data
 - `orders` & `order_items` - Completed orders
-- `quotes` - Saved quotes for B2B customers
 
 ## 🚧 Future Enhancements
 

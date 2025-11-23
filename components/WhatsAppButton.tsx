@@ -65,7 +65,7 @@ export default function WhatsAppButton() {
                  `*${product.name}*\n` +
                  `${product.description}\n\n` +
                  `Product Link: ${productUrl}\n\n` +
-                 `Could you please provide more information or a quote?`;
+                 `Could you please provide more information?`;
         }
       } catch (error) {
         console.error('Error fetching product:', error);

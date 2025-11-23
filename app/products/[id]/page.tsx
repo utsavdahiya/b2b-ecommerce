@@ -251,6 +251,13 @@ export default function ProductConfiguratorPage({ params }: { params: { id: stri
 
       const data = await res.json();
 
+      if (res.status === 401) {
+        // User not authenticated, redirect to login
+        const currentPath = window.location.pathname;
+        router.push(`/auth/login?redirect=${encodeURIComponent(currentPath)}`);
+        return;
+      }
+
       if (!res.ok) {
         throw new Error(data.error || 'Failed to add to cart');
       }

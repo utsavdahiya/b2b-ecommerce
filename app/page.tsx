@@ -92,14 +92,20 @@ export default function Home() {
             ) : (
               <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
                 <Link
-                  href="/auth/login"
+                  href="/products"
                   className="px-8 py-4 bg-white text-primary-600 rounded-lg font-semibold hover:bg-primary-50 transition-all transform hover:scale-105 shadow-lg"
+                >
+                  Browse Products
+                </Link>
+                <Link
+                  href="/auth/login"
+                  className="px-8 py-4 bg-primary-500 text-white rounded-lg font-semibold hover:bg-primary-400 transition-all transform hover:scale-105 shadow-lg"
                 >
                   Login
                 </Link>
                 <Link
                   href="/auth/signup"
-                  className="px-8 py-4 bg-primary-500 text-white rounded-lg font-semibold hover:bg-primary-400 transition-all transform hover:scale-105 shadow-lg"
+                  className="px-8 py-4 bg-transparent border-2 border-white text-white rounded-lg font-semibold hover:bg-white hover:text-primary-600 transition-all transform hover:scale-105"
                 >
                   Sign Up
                 </Link>
@@ -190,7 +196,7 @@ export default function Home() {
               </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-3">Business Focused</h3>
               <p className="text-gray-600">
-                Built specifically for businesses with features like quotes, bulk ordering, and account management.
+                Built specifically for businesses with features like bulk ordering, and account management.
               </p>
             </div>
 
@@ -218,12 +224,18 @@ export default function Home() {
               Ready to Get Started?
             </h2>
             <p className="text-xl text-primary-100 mb-8">
-              Join thousands of businesses already using our platform for their printing needs.
+              Browse our products or create an account to place orders and get exclusive deals.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
-                href="/auth/signup"
+                href="/products"
                 className="px-8 py-4 bg-white text-primary-600 rounded-lg font-semibold hover:bg-primary-50 transition-all transform hover:scale-105 shadow-lg"
+              >
+                Browse Products
+              </Link>
+              <Link
+                href="/auth/signup"
+                className="px-8 py-4 bg-primary-500 text-white rounded-lg font-semibold hover:bg-primary-400 transition-all transform hover:scale-105 shadow-lg border-2 border-primary-400"
               >
                 Create Account
               </Link>

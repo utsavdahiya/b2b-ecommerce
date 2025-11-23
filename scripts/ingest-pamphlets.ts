@@ -18,7 +18,7 @@ interface PamphletProduct {
   category: string;
   subCategory: string;
   imageSrc: string;
-  attributes: Record<string, string>;
+  attributes: Record<string, string | undefined>;
 }
 
 async function ingestPamphlets() {
@@ -29,6 +29,10 @@ async function ingestPamphlets() {
   let errorCount = 0;
 
   for (const product of pamphletData as PamphletProduct[]) {
+    // Filter out undefined values from attributes
+    const cleanedAttributes = Object.fromEntries(
+      Object.entries(product.attributes).filter(([_, value]) => value !== undefined)
+    ) as Record<string, string>;
     try {
       // Create a base price model for pamphlets/posters
       // Customize based on product type
@@ -63,7 +67,7 @@ async function ingestPamphlets() {
             product.productName,
             `${product.productName} - ${product.subCategory}`,
             [product.imageSrc],
-            JSON.stringify(product.attributes),
+            JSON.stringify(cleanedAttributes),
             existingProduct.rows[0].id
           ]
         );
@@ -93,7 +97,7 @@ async function ingestPamphlets() {
             product.subCategory,
             JSON.stringify(basePriceModel),
             [product.imageSrc],
-            JSON.stringify(product.attributes),
+            JSON.stringify(cleanedAttributes),
             1000, // Default stock quantity
             2, // Default estimated delivery days (48 hours)
             true // is_active

@@ -25,7 +25,6 @@ export default function CartPage() {
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState<number | null>(null);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
-  const [savingQuote, setSavingQuote] = useState(false);
 
   useEffect(() => {
     fetchCart();
@@ -112,35 +111,6 @@ export default function CartPage() {
       setMessage({ type: 'error', text: 'Failed to clear cart' });
     } finally {
       setLoading(false);
-    }
-  };
-
-  const saveAsQuote = async () => {
-    setSavingQuote(true);
-    setMessage(null);
-
-    try {
-      const res = await fetch('/api/quotes', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ validDays: 30 }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.error || 'Failed to save quote');
-      }
-
-      setMessage({ type: 'success', text: 'Quote saved successfully!' });
-      
-      setTimeout(() => {
-        router.push('/user/quotes');
-      }, 1500);
-    } catch (error: any) {
-      setMessage({ type: 'error', text: error.message });
-    } finally {
-      setSavingQuote(false);
     }
   };
 
@@ -317,14 +287,6 @@ export default function CartPage() {
                 >
                   Proceed to Checkout
                 </Link>
-
-                <button
-                  onClick={saveAsQuote}
-                  disabled={savingQuote}
-                  className="w-full py-3 px-6 bg-gray-200 text-gray-800 font-semibold rounded-lg hover:bg-gray-300 transition-colors disabled:opacity-50"
-                >
-                  {savingQuote ? 'Saving...' : 'Save as Quote'}
-                </button>
 
                 <Link
                   href="/products"

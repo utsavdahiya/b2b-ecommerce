@@ -74,18 +74,6 @@ CREATE TABLE IF NOT EXISTS order_items (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- Quotes table: Stores saved quotes for B2B customers
-CREATE TABLE IF NOT EXISTS quotes (
-    id SERIAL PRIMARY KEY,
-    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    quote_details JSONB NOT NULL DEFAULT '{}',
-    total_price DECIMAL(10, 2) NOT NULL,
-    status VARCHAR(50) NOT NULL DEFAULT 'pending',
-    valid_until TIMESTAMP WITH TIME ZONE,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-);
-
 -- Config table: Stores application configuration (key-value pairs)
 CREATE TABLE IF NOT EXISTS config (
     id SERIAL PRIMARY KEY,
@@ -103,7 +91,6 @@ CREATE INDEX IF NOT EXISTS idx_cart_items_cart_id ON cart_items(cart_id);
 CREATE INDEX IF NOT EXISTS idx_orders_user_id ON orders(user_id);
 CREATE INDEX IF NOT EXISTS idx_orders_gst_number ON orders(gst_number);
 CREATE INDEX IF NOT EXISTS idx_order_items_order_id ON order_items(order_id);
-CREATE INDEX IF NOT EXISTS idx_quotes_user_id ON quotes(user_id);
 CREATE INDEX IF NOT EXISTS idx_products_category ON products(category);
 CREATE INDEX IF NOT EXISTS idx_products_is_active ON products(is_active);
 CREATE INDEX IF NOT EXISTS idx_config_key ON config(key);
@@ -136,10 +123,6 @@ CREATE TRIGGER update_cart_items_updated_at BEFORE UPDATE ON cart_items
 
 DROP TRIGGER IF EXISTS update_orders_updated_at ON orders;
 CREATE TRIGGER update_orders_updated_at BEFORE UPDATE ON orders
-    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-
-DROP TRIGGER IF EXISTS update_quotes_updated_at ON quotes;
-CREATE TRIGGER update_quotes_updated_at BEFORE UPDATE ON quotes
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 DROP TRIGGER IF EXISTS update_config_updated_at ON config;

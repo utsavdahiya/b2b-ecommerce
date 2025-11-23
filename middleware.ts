@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 // Paths that require authentication
-const protectedPaths = ['/products', '/cart', '/checkout', '/user', '/orders', '/quotes'];
+const protectedPaths = ['/cart', '/checkout', '/user', '/orders'];
 
 // Paths that should redirect to /products if already authenticated
 const authPaths = ['/auth/login', '/auth/signup'];

@@ -120,7 +120,6 @@ Open http://localhost:3000
 
 4. **Shopping Cart** (http://localhost:3000/cart)
    - Review configured items
-   - Save as quote (B2B feature!)
    - Proceed to checkout
 
 5. **Place an Order** (http://localhost:3000/checkout)
@@ -129,7 +128,6 @@ Open http://localhost:3000
 
 6. **View Dashboard**
    - Orders: http://localhost:3000/user/orders
-   - Quotes: http://localhost:3000/user/quotes
 
 ## 📁 Project Structure
 

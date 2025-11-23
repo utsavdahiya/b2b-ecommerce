@@ -192,14 +192,6 @@ export default function Navbar() {
                 >
                   Orders
                 </Link>
-                <Link
-                  href="/user/quotes"
-                  className={`text-gray-700 hover:text-primary-600 transition-colors ${
-                    pathname.startsWith('/user/quotes') ? 'text-primary-600 font-semibold' : ''
-                  }`}
-                >
-                  Quotes
-                </Link>
                 <div className="flex items-center space-x-4">
                   <span className="text-sm text-gray-600">{user.company_name}</span>
                   <button
@@ -212,6 +204,63 @@ export default function Navbar() {
               </>
             ) : (
               <>
+                {/* Products with Dropdown for non-authenticated users */}
+                <div className="relative" ref={dropdownRef}>
+                  <button
+                    onMouseEnter={handleProductsMouseEnter}
+                    onMouseLeave={handleProductsMouseLeave}
+                    className={`text-gray-700 hover:text-primary-600 transition-colors flex items-center space-x-1 ${
+                      pathname === '/products' ? 'text-primary-600 font-semibold' : ''
+                    }`}
+                  >
+                    <span>Products</span>
+                    <svg
+                      className={`w-4 h-4 transition-transform ${productsMenuOpen ? 'rotate-180' : ''}`}
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M19 9l-7 7-7-7"
+                      />
+                    </svg>
+                  </button>
+                  
+                  {productsMenuOpen && (
+                    <div
+                      className="absolute top-full left-0 mt-1 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50"
+                      onMouseEnter={handleProductsMouseEnter}
+                      onMouseLeave={handleProductsMouseLeave}
+                    >
+                      <button
+                        onClick={() => handleCategoryClick('all')}
+                        className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-100 transition-colors ${
+                          pathname === '/products' && !searchParams?.get('category')
+                            ? 'text-primary-600 font-semibold bg-primary-50'
+                            : 'text-gray-700'
+                        }`}
+                      >
+                        All Products
+                      </button>
+                      {categories.map((category) => (
+                        <button
+                          key={category}
+                          onClick={() => handleCategoryClick(category)}
+                          className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-100 transition-colors ${
+                            searchParams?.get('category') === category
+                              ? 'text-primary-600 font-semibold bg-primary-50'
+                              : 'text-gray-700'
+                          }`}
+                        >
+                          {formatCategoryName(category)}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
                 <Link
                   href="/auth/login"
                   className="px-4 py-2 text-gray-700 hover:text-primary-600 transition-colors"
@@ -334,13 +383,6 @@ export default function Navbar() {
                 >
                   Orders
                 </Link>
-                <Link
-                  href="/user/quotes"
-                  className="block py-2 text-gray-700 hover:text-primary-600"
-                  onClick={() => setMenuOpen(false)}
-                >
-                  Quotes
-                </Link>
                 <button
                   onClick={() => {
                     handleLogout();
@@ -353,6 +395,56 @@ export default function Navbar() {
               </>
             ) : (
               <>
+                {/* Products with Sub-menu for non-authenticated users */}
+                <div>
+                  <button
+                    onClick={() => setMobileProductsMenuOpen(!mobileProductsMenuOpen)}
+                    className="w-full flex items-center justify-between py-2 text-gray-700 hover:text-primary-600"
+                  >
+                    <span>Products</span>
+                    <svg
+                      className={`w-4 h-4 transition-transform ${mobileProductsMenuOpen ? 'rotate-180' : ''}`}
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M19 9l-7 7-7-7"
+                      />
+                    </svg>
+                  </button>
+                  
+                  {mobileProductsMenuOpen && (
+                    <div className="pl-4 mt-1 space-y-1">
+                      <button
+                        onClick={() => handleCategoryClick('all')}
+                        className={`w-full text-left py-2 text-sm ${
+                          pathname === '/products' && !searchParams?.get('category')
+                            ? 'text-primary-600 font-semibold'
+                            : 'text-gray-600 hover:text-primary-600'
+                        }`}
+                      >
+                        All Products
+                      </button>
+                      {categories.map((category) => (
+                        <button
+                          key={category}
+                          onClick={() => handleCategoryClick(category)}
+                          className={`w-full text-left py-2 text-sm ${
+                            searchParams?.get('category') === category
+                              ? 'text-primary-600 font-semibold'
+                              : 'text-gray-600 hover:text-primary-600'
+                          }`}
+                        >
+                          {formatCategoryName(category)}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
                 <Link
                   href="/auth/login"
                   className="block py-2 text-gray-700 hover:text-primary-600"
