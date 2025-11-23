@@ -2,7 +2,8 @@
 
 import React from 'react';
 import DieShapeSelector from './DieShapeSelector';
-import type { CategoryFilter } from '@/lib/types/categoryConfig';
+import type { CategoryFilter, SelectFilter, DieShapeFilter, TextFilter, NumberFilter } from '@/lib/types/categoryConfig';
+import { isSelectFilter, isDieShapeFilter, isTextFilter, isNumberFilter } from '@/lib/types/categoryConfig';
 
 export interface CategoryFilterProps {
   /** The filter key/identifier */
@@ -42,7 +43,10 @@ export default function CategoryFilter({
 
   // Render select filter with optimized layouts
   const renderSelectFilter = () => {
-    const optionCount = filter.options.length;
+    if (!isSelectFilter(filter)) return null;
+    
+    const selectFilter = filter as SelectFilter;
+    const optionCount = selectFilter.options.length;
     const paddingClass = variant === 'compact' ? 'p-4' : 'p-5';
     const titleSize = variant === 'compact' ? 'text-base' : 'text-lg';
 
@@ -55,7 +59,7 @@ export default function CategoryFilter({
             {filter.required && <span className="text-red-500 ml-1">*</span>}
           </label>
           <div className="grid grid-cols-2 gap-3">
-            {filter.options.map((option) => (
+            {selectFilter.options.map((option) => (
               <button
                 key={option}
                 onClick={() => handleChange(option)}
@@ -80,11 +84,11 @@ export default function CategoryFilter({
       return (
         <div className={`bg-white rounded-lg shadow-md ${paddingClass} ${className}`}>
           <label className={`block ${titleSize} font-semibold text-gray-900 mb-3`}>
-            {filter.label}
-            {filter.required && <span className="text-red-500 ml-1">*</span>}
+            {selectFilter.label}
+            {selectFilter.required && <span className="text-red-500 ml-1">*</span>}
           </label>
           <div className="flex flex-wrap gap-2 sm:gap-3">
-            {filter.options.map((option) => (
+            {selectFilter.options.map((option) => (
               <button
                 key={option}
                 onClick={() => handleChange(option)}
@@ -109,11 +113,11 @@ export default function CategoryFilter({
       return (
         <div className={`bg-white rounded-lg shadow-md ${paddingClass} ${className}`}>
           <label className={`block ${titleSize} font-semibold text-gray-900 mb-3`}>
-            {filter.label}
-            {filter.required && <span className="text-red-500 ml-1">*</span>}
+            {selectFilter.label}
+            {selectFilter.required && <span className="text-red-500 ml-1">*</span>}
           </label>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-            {filter.options.map((option) => (
+            {selectFilter.options.map((option) => (
               <button
                 key={option}
                 onClick={() => handleChange(option)}
@@ -137,18 +141,21 @@ export default function CategoryFilter({
 
   // Render die shape selector
   const renderDieShapeFilter = () => {
+    if (!isDieShapeFilter(filter)) return null;
+    
+    const dieShapeFilter = filter as DieShapeFilter;
     const paddingClass = variant === 'compact' ? 'p-4' : 'p-6';
     const titleSize = variant === 'compact' ? 'text-lg' : 'text-xl';
 
     return (
       <div className={`bg-white rounded-lg shadow-md ${paddingClass} ${className}`}>
         <h2 className={`${titleSize} font-semibold text-gray-900 mb-4`}>
-          {filter.label}
-          {filter.required && <span className="text-red-500 ml-1">*</span>}
+          {dieShapeFilter.label}
+          {dieShapeFilter.required && <span className="text-red-500 ml-1">*</span>}
         </h2>
         <DieShapeSelector
-          options={filter.options}
-          selected={(value as string) || filter.default}
+          options={dieShapeFilter.options}
+          selected={(value as string) || dieShapeFilter.default}
           onChange={(shapeId) => handleChange(shapeId)}
         />
       </div>
@@ -157,21 +164,24 @@ export default function CategoryFilter({
 
   // Render text input
   const renderTextFilter = () => {
+    if (!isTextFilter(filter)) return null;
+    
+    const textFilter = filter as TextFilter;
     const paddingClass = variant === 'compact' ? 'p-4' : 'p-6';
 
     return (
       <div className={`bg-white rounded-lg shadow-md ${paddingClass} ${className}`}>
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          {filter.label}
-          {filter.required && <span className="text-red-500 ml-1">*</span>}
+          {textFilter.label}
+          {textFilter.required && <span className="text-red-500 ml-1">*</span>}
         </label>
         <input
           type="text"
           value={(value as string) || ''}
           onChange={(e) => handleChange(e.target.value)}
           className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
-          required={filter.required}
-          placeholder={filter.default ? String(filter.default) : undefined}
+          required={textFilter.required}
+          placeholder={textFilter.default ? String(textFilter.default) : undefined}
         />
       </div>
     );
@@ -179,21 +189,24 @@ export default function CategoryFilter({
 
   // Render number input
   const renderNumberFilter = () => {
+    if (!isNumberFilter(filter)) return null;
+    
+    const numberFilter = filter as NumberFilter;
     const paddingClass = variant === 'compact' ? 'p-4' : 'p-6';
 
     return (
       <div className={`bg-white rounded-lg shadow-md ${paddingClass} ${className}`}>
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          {filter.label}
-          {filter.required && <span className="text-red-500 ml-1">*</span>}
+          {numberFilter.label}
+          {numberFilter.required && <span className="text-red-500 ml-1">*</span>}
         </label>
         <input
           type="number"
           value={value !== undefined ? value : ''}
           onChange={(e) => handleChange(e.target.value ? Number(e.target.value) : '')}
           className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
-          required={filter.required}
-          placeholder={filter.default ? String(filter.default) : undefined}
+          required={numberFilter.required}
+          placeholder={numberFilter.default ? String(numberFilter.default) : undefined}
         />
       </div>
     );
