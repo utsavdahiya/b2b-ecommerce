@@ -19,44 +19,47 @@ async function getUserIdFromToken(): Promise<number | null> {
   }
 }
 
-// Initialize S3 client
+// Initialize Supabase Storage S3 client
 function getS3Client() {
-  // Support both AWS S3 and Supabase Storage
-  const accessKeyId = process.env.AWS_S3_ACCESS_KEY_ID || process.env.SUPABASE_STORAGE_ACCESS_KEY;
-  const secretAccessKey = process.env.AWS_S3_SECRET_ACCESS_KEY || process.env.SUPABASE_STORAGE_SECRET_KEY;
-  const endpoint = process.env.AWS_S3_ENDPOINT || process.env.SUPABASE_STORAGE_UPLOAD_ENDPOINT;
-  const region = process.env.AWS_S3_REGION || process.env.SUPABASE_STORAGE_REGION || 'us-east-1';
+  const accessKeyId = process.env.SUPABASE_STORAGE_ACCESS_KEY;
+  const secretAccessKey = process.env.SUPABASE_STORAGE_SECRET_KEY;
+  const endpoint = process.env.SUPABASE_STORAGE_UPLOAD_ENDPOINT;
+  const region = process.env.SUPABASE_STORAGE_REGION || 'us-east-1';
 
   // Debug logging
-  console.log('[S3 Client] Configuration check:');
-  console.log('  - Using:', endpoint ? 'Supabase Storage (S3-compatible)' : 'AWS S3');
+  console.log('[Supabase Storage] Configuration check:');
   console.log('  - Access Key:', accessKeyId ? `${accessKeyId.substring(0, 8)}... (length: ${accessKeyId.length})` : 'NOT SET');
   console.log('  - Secret Key:', secretAccessKey ? `***... (length: ${secretAccessKey.length})` : 'NOT SET');
   console.log('  - Region:', region);
-  console.log('  - Upload Endpoint:', endpoint || 'NOT SET (using AWS S3 default)');
+  console.log('  - Upload Endpoint:', endpoint || 'NOT SET');
   console.log('  - Public Endpoint (for URLs):', process.env.SUPABASE_PUBLIC_ENDPOINT || 'NOT SET');
-  console.log('  - Bucket:', process.env.AWS_S3_BUCKET_NAME || process.env.SUPABASE_STORAGE_BUCKET || 'NOT SET');
-  console.log('  - Reject Unauthorized:', process.env.AWS_S3_REJECT_UNAUTHORIZED || 'true (default)');
+  console.log('  - Bucket:', process.env.SUPABASE_STORAGE_BUCKET || 'NOT SET');
+  console.log('  - Reject Unauthorized:', process.env.SUPABASE_REJECT_UNAUTHORIZED !== 'false');
   
+  // Validate required configuration
+  if (!accessKeyId || !secretAccessKey) {
+    const missing = [];
+    if (!accessKeyId) missing.push('SUPABASE_STORAGE_ACCESS_KEY');
+    if (!secretAccessKey) missing.push('SUPABASE_STORAGE_SECRET_KEY');
+    console.error('[Supabase Storage] Missing credentials:', missing);
+    throw new Error(`Supabase Storage credentials are not configured. Missing: ${missing.join(', ')}`);
+  }
+
+  if (!endpoint) {
+    throw new Error('SUPABASE_STORAGE_UPLOAD_ENDPOINT is required. Please set it in .env.local');
+  }
+
   // Validate Supabase Storage upload endpoint format
-  if (endpoint && endpoint.includes('/storage/v1/object/public/')) {
-    console.error('[S3 Client] ERROR: SUPABASE_STORAGE_UPLOAD_ENDPOINT should be the S3 API endpoint, not the public URL!');
-    console.error('[S3 Client] Expected format: https://{project-id}.storage.supabase.co/storage/v1/s3');
-    console.error('[S3 Client] Current value:', endpoint);
+  if (endpoint.includes('/storage/v1/object/public/')) {
+    console.error('[Supabase Storage] ERROR: SUPABASE_STORAGE_UPLOAD_ENDPOINT should be the S3 API endpoint, not the public URL!');
+    console.error('[Supabase Storage] Expected format: https://{project-id}.storage.supabase.co/storage/v1/s3');
+    console.error('[Supabase Storage] Current value:', endpoint);
     throw new Error('Invalid SUPABASE_STORAGE_UPLOAD_ENDPOINT. Use the S3 API endpoint (https://{project-id}.storage.supabase.co/storage/v1/s3), not the public URL endpoint.');
   }
 
-  if (!accessKeyId || !secretAccessKey) {
-    const missing = [];
-    if (!accessKeyId) missing.push('AWS_S3_ACCESS_KEY_ID or SUPABASE_STORAGE_ACCESS_KEY');
-    if (!secretAccessKey) missing.push('AWS_S3_SECRET_ACCESS_KEY or SUPABASE_STORAGE_SECRET_KEY');
-    console.error('[S3 Client] Missing credentials:', missing);
-    throw new Error(`S3 credentials are not configured. Missing: ${missing.join(', ')}`);
-  }
-
   // Configure HTTP handler to handle self-signed certificates
-  // Set AWS_S3_REJECT_UNAUTHORIZED=false in .env.local to allow self-signed certs
-  const rejectUnauthorized = process.env.AWS_S3_REJECT_UNAUTHORIZED !== 'false';
+  // Set SUPABASE_REJECT_UNAUTHORIZED=false in .env.local to allow self-signed certs
+  const rejectUnauthorized = process.env.SUPABASE_REJECT_UNAUTHORIZED !== 'false';
   const requestHandler = new NodeHttpHandler({
     httpsAgent: new https.Agent({
       rejectUnauthorized,
@@ -69,17 +72,12 @@ function getS3Client() {
       accessKeyId,
       secretAccessKey,
     },
+    endpoint,
+    forcePathStyle: true, // Required for Supabase Storage
     requestHandler,
   };
 
-  // Add custom endpoint if provided (for Supabase Storage or other S3-compatible services)
-  if (endpoint) {
-    clientConfig.endpoint = endpoint;
-    clientConfig.forcePathStyle = true; // Required for Supabase Storage and most S3-compatible services
-    console.log('[S3 Client] Using S3-compatible service with endpoint:', endpoint);
-  } else {
-    console.log('[S3 Client] Using AWS S3 (no custom endpoint)');
-  }
+  console.log('[Supabase Storage] Using endpoint:', endpoint);
 
   return new S3Client(clientConfig);
 }
@@ -95,11 +93,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check bucket configuration (supports both AWS S3 and Supabase Storage)
-    const bucketName = process.env.AWS_S3_BUCKET_NAME || process.env.SUPABASE_STORAGE_BUCKET;
+    // Check bucket configuration
+    const bucketName = process.env.SUPABASE_STORAGE_BUCKET;
     if (!bucketName) {
       return NextResponse.json(
-        { error: 'S3 bucket not configured. Please set AWS_S3_BUCKET_NAME or SUPABASE_STORAGE_BUCKET' },
+        { error: 'Supabase Storage bucket not configured. Please set SUPABASE_STORAGE_BUCKET' },
         { status: 500 }
       );
     }
@@ -154,8 +152,8 @@ export async function POST(request: NextRequest) {
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    // Upload to S3
-    console.log('[Upload] Starting S3 upload...');
+    // Upload to Supabase Storage
+    console.log('[Upload] Starting Supabase Storage upload...');
     console.log('[Upload] File details:', {
       name: file.name,
       size: file.size,
@@ -165,7 +163,6 @@ export async function POST(request: NextRequest) {
     });
 
     const s3Client = getS3Client();
-    const region = process.env.AWS_S3_REGION || 'us-east-1';
     
     // Try with ACL first, fallback to without ACL if bucket doesn't allow it
     let command = new PutObjectCommand({
@@ -209,45 +206,31 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Construct file URL
-    const endpoint = process.env.AWS_S3_ENDPOINT || process.env.SUPABASE_STORAGE_UPLOAD_ENDPOINT;
-    const supabasePublicEndpoint = process.env.SUPABASE_PUBLIC_ENDPOINT; // e.g., https://mlvrmlourfbexrheajut.supabase.co
+    // Construct Supabase Storage public file URL
+    const supabasePublicEndpoint = process.env.SUPABASE_PUBLIC_ENDPOINT;
     let fileUrl: string;
     
-    // Check if we're using Supabase Storage (has SUPABASE_STORAGE_UPLOAD_ENDPOINT or SUPABASE_PUBLIC_ENDPOINT)
-    const isSupabaseStorage = !!(process.env.SUPABASE_STORAGE_UPLOAD_ENDPOINT || process.env.SUPABASE_PUBLIC_ENDPOINT);
-    
-    if (isSupabaseStorage && supabasePublicEndpoint) {
-      // For Supabase Storage, use the public object URL format
+    if (supabasePublicEndpoint) {
+      // Use the public object URL format
       // Format: https://{project}.supabase.co/storage/v1/object/public/{bucket}/{path}
       const baseUrl = supabasePublicEndpoint.replace(/\/$/, ''); // Remove trailing slash
       fileUrl = `${baseUrl}/storage/v1/object/public/${bucketName}/${fileName}`;
-      console.log('[Upload] Constructed file URL (Supabase Storage):', fileUrl);
-    } else if (isSupabaseStorage && !supabasePublicEndpoint) {
-      // Fallback: try to extract project URL from upload endpoint if SUPABASE_PUBLIC_ENDPOINT is not set
+      console.log('[Upload] Constructed file URL:', fileUrl);
+    } else {
+      // Fallback: try to extract project URL from upload endpoint
       console.warn('[Upload] SUPABASE_PUBLIC_ENDPOINT not set, attempting to derive from upload endpoint');
-      if (endpoint && endpoint.includes('.storage.supabase.co')) {
-        const projectId = endpoint.match(/https:\/\/([^.]+)\.storage\.supabase\.co/)?.[1];
+      const uploadEndpoint = process.env.SUPABASE_STORAGE_UPLOAD_ENDPOINT;
+      if (uploadEndpoint && uploadEndpoint.includes('.storage.supabase.co')) {
+        const projectId = uploadEndpoint.match(/https:\/\/([^.]+)\.storage\.supabase\.co/)?.[1];
         if (projectId) {
           fileUrl = `https://${projectId}.supabase.co/storage/v1/object/public/${bucketName}/${fileName}`;
-          console.log('[Upload] Constructed file URL (Supabase Storage, derived):', fileUrl);
+          console.log('[Upload] Constructed file URL (derived):', fileUrl);
         } else {
           throw new Error('Cannot construct Supabase Storage URL. Please set SUPABASE_PUBLIC_ENDPOINT in .env.local');
         }
       } else {
-        throw new Error('SUPABASE_PUBLIC_ENDPOINT is required for Supabase Storage. Please set it in .env.local');
+        throw new Error('SUPABASE_PUBLIC_ENDPOINT is required. Please set it in .env.local');
       }
-    } else if (endpoint) {
-      // For other S3-compatible services, use path-style URL
-      const baseUrl = endpoint.replace(/\/$/, ''); // Remove trailing slash
-      fileUrl = `${baseUrl}/${bucketName}/${fileName}`;
-      console.log('[Upload] Constructed file URL (S3-compatible):', fileUrl);
-    } else {
-      // For AWS S3, use virtual-hosted-style URL
-      fileUrl = region === 'us-east-1' 
-        ? `https://${bucketName}.s3.amazonaws.com/${fileName}`
-        : `https://${bucketName}.s3.${region}.amazonaws.com/${fileName}`;
-      console.log('[Upload] Constructed file URL (AWS S3):', fileUrl);
     }
 
     return NextResponse.json({
@@ -280,13 +263,13 @@ export async function POST(request: NextRequest) {
     }
     console.error('Full error object:', serializedError);
     console.error('Environment check:', {
-      bucketName: process.env.AWS_S3_BUCKET_NAME,
-      hasAccessKey: !!process.env.AWS_S3_ACCESS_KEY_ID,
-      hasSecretKey: !!process.env.AWS_S3_SECRET_ACCESS_KEY,
-      accessKeyPrefix: process.env.AWS_S3_ACCESS_KEY_ID?.substring(0, 8),
-      region: process.env.AWS_S3_REGION,
-      endpoint: process.env.AWS_S3_ENDPOINT,
-      rejectUnauthorized: process.env.AWS_S3_REJECT_UNAUTHORIZED,
+      bucketName: process.env.SUPABASE_STORAGE_BUCKET,
+      hasAccessKey: !!process.env.SUPABASE_STORAGE_ACCESS_KEY,
+      hasSecretKey: !!process.env.SUPABASE_STORAGE_SECRET_KEY,
+      accessKeyPrefix: process.env.SUPABASE_STORAGE_ACCESS_KEY?.substring(0, 8),
+      uploadEndpoint: process.env.SUPABASE_STORAGE_UPLOAD_ENDPOINT,
+      publicEndpoint: process.env.SUPABASE_PUBLIC_ENDPOINT,
+      rejectUnauthorized: process.env.SUPABASE_REJECT_UNAUTHORIZED !== 'false',
     });
     console.error('========================================');
     
@@ -303,45 +286,45 @@ export async function POST(request: NextRequest) {
         message: error.message,
         stack: error.stack,
         config: {
-          bucketName: process.env.AWS_S3_BUCKET_NAME,
-          region: process.env.AWS_S3_REGION,
-          endpoint: process.env.AWS_S3_ENDPOINT,
-          hasAccessKey: !!process.env.AWS_S3_ACCESS_KEY_ID,
-          hasSecretKey: !!process.env.AWS_S3_SECRET_ACCESS_KEY,
-          accessKeyPrefix: process.env.AWS_S3_ACCESS_KEY_ID?.substring(0, 8),
+          bucketName: process.env.SUPABASE_STORAGE_BUCKET,
+          uploadEndpoint: process.env.SUPABASE_STORAGE_UPLOAD_ENDPOINT,
+          publicEndpoint: process.env.SUPABASE_PUBLIC_ENDPOINT,
+          hasAccessKey: !!process.env.SUPABASE_STORAGE_ACCESS_KEY,
+          hasSecretKey: !!process.env.SUPABASE_STORAGE_SECRET_KEY,
+          accessKeyPrefix: process.env.SUPABASE_STORAGE_ACCESS_KEY?.substring(0, 8),
         },
       };
     }
     
     // Provide more specific error messages
     if (error.message?.includes('credentials') || error.name === 'CredentialsProviderError') {
-      errorDetails.error = 'AWS credentials are not configured properly. Please check AWS_S3_ACCESS_KEY_ID and AWS_S3_SECRET_ACCESS_KEY';
+      errorDetails.error = 'Supabase Storage credentials are not configured properly. Please check SUPABASE_STORAGE_ACCESS_KEY and SUPABASE_STORAGE_SECRET_KEY';
       return NextResponse.json(errorDetails, { status: 500 });
     }
     
     if (error.name === 'NoSuchBucket' || error.Code === 'NoSuchBucket') {
-      errorDetails.error = `S3 bucket "${process.env.AWS_S3_BUCKET_NAME}" not found. Please check AWS_S3_BUCKET_NAME`;
+      errorDetails.error = `Supabase Storage bucket "${process.env.SUPABASE_STORAGE_BUCKET}" not found. Please check SUPABASE_STORAGE_BUCKET`;
       return NextResponse.json(errorDetails, { status: 500 });
     }
     
     if (error.name === 'InvalidAccessKeyId' || error.Code === 'InvalidAccessKeyId') {
-      errorDetails.error = 'Invalid AWS access key. Please check your credentials';
+      errorDetails.error = 'Invalid Supabase Storage access key. Please check your credentials';
       if (process.env.NODE_ENV === 'development') {
-        errorDetails.debug.hint = 'Verify that AWS_S3_ACCESS_KEY_ID matches your S3 service credentials. For Supabase Storage, use the S3 Access Key from Supabase dashboard.';
+        errorDetails.debug.hint = 'Verify that SUPABASE_STORAGE_ACCESS_KEY matches your Supabase Storage S3 Access Key from the Supabase dashboard.';
       }
       return NextResponse.json(errorDetails, { status: 500 });
     }
     
     if (error.name === 'SignatureDoesNotMatch' || error.Code === 'SignatureDoesNotMatch') {
       return NextResponse.json(
-        { error: 'AWS secret access key is incorrect' },
+        { error: 'Supabase Storage secret access key is incorrect' },
         { status: 500 }
       );
     }
     
     if (error.name === 'AccessDenied' || error.Code === 'AccessDenied') {
       return NextResponse.json(
-        { error: 'Access denied to S3 bucket. Please check bucket permissions and IAM policy' },
+        { error: 'Access denied to Supabase Storage bucket. Please check bucket permissions and policies' },
         { status: 500 }
       );
     }
@@ -350,9 +333,9 @@ export async function POST(request: NextRequest) {
     if (error.message?.includes('self-signed certificate') || error.message?.includes('certificate') || error.code === 'UNABLE_TO_VERIFY_LEAF_SIGNATURE') {
       return NextResponse.json(
         { 
-          error: 'SSL certificate verification failed. If using Supabase Storage or a custom S3 endpoint, set AWS_S3_REJECT_UNAUTHORIZED=false in .env.local',
+          error: 'SSL certificate verification failed. Set SUPABASE_REJECT_UNAUTHORIZED=false in .env.local',
           details: process.env.NODE_ENV === 'development' ? {
-            hint: 'Add AWS_S3_REJECT_UNAUTHORIZED=false to your .env.local file to allow self-signed certificates'
+            hint: 'Add SUPABASE_REJECT_UNAUTHORIZED=false to your .env.local file to allow self-signed certificates'
           } : undefined
         },
         { status: 500 }
@@ -372,12 +355,12 @@ export async function POST(request: NextRequest) {
         message: error.message,
         stack: error.stack,
         config: {
-          bucketName: process.env.AWS_S3_BUCKET_NAME,
-          region: process.env.AWS_S3_REGION,
-          endpoint: process.env.AWS_S3_ENDPOINT,
-          hasAccessKey: !!process.env.AWS_S3_ACCESS_KEY_ID,
-          hasSecretKey: !!process.env.AWS_S3_SECRET_ACCESS_KEY,
-          accessKeyPrefix: process.env.AWS_S3_ACCESS_KEY_ID?.substring(0, 8),
+          bucketName: process.env.SUPABASE_STORAGE_BUCKET,
+          uploadEndpoint: process.env.SUPABASE_STORAGE_UPLOAD_ENDPOINT,
+          publicEndpoint: process.env.SUPABASE_PUBLIC_ENDPOINT,
+          hasAccessKey: !!process.env.SUPABASE_STORAGE_ACCESS_KEY,
+          hasSecretKey: !!process.env.SUPABASE_STORAGE_SECRET_KEY,
+          accessKeyPrefix: process.env.SUPABASE_STORAGE_ACCESS_KEY?.substring(0, 8),
         },
       };
     }

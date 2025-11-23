@@ -87,21 +87,13 @@ JWT_EXPIRES_IN=7d
 # App Configuration
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 
-# Storage Configuration (for file uploads)
-
-# Option 1: AWS S3
-AWS_S3_ACCESS_KEY_ID=your-aws-access-key-id
-AWS_S3_SECRET_ACCESS_KEY=your-aws-secret-access-key
-AWS_S3_BUCKET_NAME=your-bucket-name
-AWS_S3_REGION=us-east-1
-
-# Option 2: Supabase Storage (S3-compatible, recommended)
+# Supabase Storage Configuration (for file uploads)
 SUPABASE_STORAGE_UPLOAD_ENDPOINT=https://your-project-id.storage.supabase.co/storage/v1/s3
 SUPABASE_STORAGE_ACCESS_KEY=your-supabase-access-key
 SUPABASE_STORAGE_SECRET_KEY=your-supabase-secret-key
 SUPABASE_STORAGE_BUCKET=your-bucket-name
 SUPABASE_PUBLIC_ENDPOINT=https://your-project-id.supabase.co
-AWS_S3_REJECT_UNAUTHORIZED=false
+SUPABASE_REJECT_UNAUTHORIZED=false
 ```
 
 4. **Set up the database**
