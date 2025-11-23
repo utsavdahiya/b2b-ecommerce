@@ -336,51 +336,94 @@ export default function ProductConfiguratorPage({ params }: { params: { id: stri
 
     switch (filter.type) {
       case 'select':
-        // Determine layout based on number of options for optimal UX
         const optionCount = filter.options.length;
-        let layoutClass = '';
-        let buttonClass = '';
         
+        // Optimized layouts for better UX
         if (optionCount <= 2) {
-          // For 2 options: side-by-side toggle style
-          layoutClass = 'grid grid-cols-2 gap-3';
-          buttonClass = 'w-full';
-        } else if (optionCount <= 4) {
-          // For 3-4 options: horizontal button group
-          layoutClass = 'flex flex-wrap gap-2';
-          buttonClass = 'flex-1 min-w-[70px]';
-        } else {
-          // For 5+ options: responsive grid
-          layoutClass = 'grid grid-cols-2 sm:grid-cols-3 gap-2';
-          buttonClass = 'w-full';
-        }
-        
-        return (
-          <div className="bg-white rounded-lg shadow-md p-6" key={key}>
-            <h2 className="text-lg font-semibold text-gray-900 mb-3">
-              {filter.label}
-              {filter.required && <span className="text-red-500 ml-1">*</span>}
-            </h2>
-            <div className={layoutClass}>
-              {filter.options.map((option) => (
-                <button
-                  key={option}
-                  onClick={() => handleCategoryFilterChange(key, option)}
-                  className={`
-                    ${buttonClass}
-                    px-4 py-3 rounded-lg border-2 transition-all font-medium text-sm
-                    ${value === option
-                      ? 'border-primary-600 bg-primary-600 text-white shadow-md ring-2 ring-primary-300'
-                      : 'border-gray-300 bg-white text-gray-700 hover:border-primary-400 hover:bg-primary-50'
-                    }
-                  `}
-                >
-                  {option}
-                </button>
-              ))}
+          // For 2 options: side-by-side toggle buttons
+          return (
+            <div className="bg-white rounded-lg shadow-md p-5" key={key}>
+              <label className="block text-sm font-semibold text-gray-900 mb-3">
+                {filter.label}
+                {filter.required && <span className="text-red-500 ml-1">*</span>}
+              </label>
+              <div className="grid grid-cols-2 gap-3">
+                {filter.options.map((option) => (
+                  <button
+                    key={option}
+                    onClick={() => handleCategoryFilterChange(key, option)}
+                    className={`
+                      px-4 py-2.5 rounded-lg border-2 transition-all font-medium text-sm
+                      ${value === option
+                        ? 'border-primary-600 bg-primary-600 text-white shadow-md'
+                        : 'border-gray-300 bg-white text-gray-700 hover:border-primary-400 hover:bg-primary-50'
+                      }
+                    `}
+                  >
+                    {option}
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
-        );
+          );
+        } else if (optionCount <= 4) {
+          // For 3-4 options: Compact horizontal button group (best for UV, Foil, Printing)
+          // Shows all options at once for faster selection - better UX than dropdowns
+          return (
+            <div className="bg-white rounded-lg shadow-md p-5" key={key}>
+              <label className="block text-sm font-semibold text-gray-900 mb-3">
+                {filter.label}
+                {filter.required && <span className="text-red-500 ml-1">*</span>}
+              </label>
+              <div className="flex flex-wrap gap-2 sm:gap-3">
+                {filter.options.map((option) => (
+                  <button
+                    key={option}
+                    onClick={() => handleCategoryFilterChange(key, option)}
+                    className={`
+                      flex-1 min-w-[70px] sm:min-w-[90px] max-w-[140px] sm:max-w-none
+                      px-3 sm:px-4 py-2.5 rounded-lg border-2 transition-all font-medium text-sm
+                      active:scale-95
+                      ${value === option
+                        ? 'border-primary-600 bg-primary-600 text-white shadow-md ring-2 ring-primary-200'
+                        : 'border-gray-300 bg-white text-gray-700 hover:border-primary-400 hover:bg-primary-50 hover:shadow-sm'
+                      }
+                    `}
+                  >
+                    {option}
+                  </button>
+                ))}
+              </div>
+            </div>
+          );
+        } else {
+          // For 5+ options: Responsive grid
+          return (
+            <div className="bg-white rounded-lg shadow-md p-5" key={key}>
+              <label className="block text-sm font-semibold text-gray-900 mb-3">
+                {filter.label}
+                {filter.required && <span className="text-red-500 ml-1">*</span>}
+              </label>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                {filter.options.map((option) => (
+                  <button
+                    key={option}
+                    onClick={() => handleCategoryFilterChange(key, option)}
+                    className={`
+                      px-3 py-2.5 rounded-lg border-2 transition-all font-medium text-sm
+                      ${value === option
+                        ? 'border-primary-600 bg-primary-600 text-white shadow-md'
+                        : 'border-gray-300 bg-white text-gray-700 hover:border-primary-400 hover:bg-primary-50'
+                      }
+                    `}
+                  >
+                    {option}
+                  </button>
+                ))}
+              </div>
+            </div>
+          );
+        }
 
       case 'die_shape_selector':
         return (
